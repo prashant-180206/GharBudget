@@ -1,45 +1,95 @@
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
-import React from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StatusBar,
+} from "react-native";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { Colors } from "@/assets/colors";
 
 const index = () => {
   const router = useRouter();
+
+  const [Seepassword, setSeepassword] = useState(false);
+
   return (
-    <SafeAreaView className=" w-full h-full p-4 flex items-center justify-center bg-col_bg-light">
-      <View className="flex flex-col gap-4 p-8 max-w-[500px] m-4  rounded-xl w-full ">
-        <Text className="text-3xl font-bold text-heading mb-4 text-center">
-          Login
-        </Text>
-        <TextInput
-          placeholder="Enter Username / Email "
-          className="p-4 bg-col_bg-dark rounded-full  border-2 border-primary-dark text-Txt-secondary text-m"
-        />
-        <TextInput
-          placeholder="Enter Password"
-          className="p-4 bg-col_bg-dark rounded-full text-Txt-secondary border-2 border-primary-dark"
-          secureTextEntry={true}
-        />
-        <TouchableOpacity
-          className="bg-button-dark rounded-full p-4 text-center text-xl text-Txt-light"
-          onPress={() => {
-            router.push("/(tabs)/home");
-          }}
-        >
-          <Text className="text-xl text-Txt-light text-center">Login</Text>
-        </TouchableOpacity>
-        <Link href={"/(auth)/forgot_password"} className="text-center">
-          <Text className="text-Txt-secondary text-center">
-            Forgot Password
+    <>
+      <StatusBar
+        barStyle="light-content"
+        translucent
+        backgroundColor="transparent"
+      />
+      <SafeAreaView className="h-full w-full bg-primary ">
+        <View className="w-full h-1/6 flex items-center justify-center">
+          <Text className="text-3xl font-semibold text-Txt">Welcome</Text>
+        </View>
+        <View className="w-full h-5/6 bg-col_bg absolute bottom-0 rounded-t-[80px] flex-col items-center justify-start py-20 ">
+          <View className="w-5/6 mt-14">
+            <Text className="p-2 font-semibold">Username or Email</Text>
+
+            <TextInput
+              className="bg-col_bg-dark w-full rounded-full px-6 py-"
+              placeholder="Enter Email"
+            ></TextInput>
+          </View>
+          <View className="w-5/6 mt-4">
+            <Text className="p-2 font-semibold">Password</Text>
+            <View className="bg-col_bg-dark  rounded-full flex-row justify-between items-center">
+              <TextInput
+                className=" px-6 flex-row justify-between "
+                placeholder="Enter Password"
+                secureTextEntry={!Seepassword}
+              ></TextInput>
+              <TouchableOpacity
+                onPress={() => {
+                  if (Seepassword) {
+                    setSeepassword(false);
+                  } else {
+                    setSeepassword(true);
+                  }
+                }}
+              >
+                <Ionicons
+                  name={Seepassword ? "eye" : "eye-off"}
+                  color={Colors.Txt.secondary}
+                  size={28}
+                ></Ionicons>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <TouchableOpacity
+            className="bg-primary rounded-full p-2 mt-20 w-3/6"
+            onPress={() => {
+              router.push("/(tabs)/home");
+            }}
+          >
+            <Text className="text-center text-xl font-semibold">Log In</Text>
+          </TouchableOpacity>
+          <Link
+            href={"/(auth)/forgot_password"}
+            className="m-2 text-sm font-semibold"
+          >
+            <Text>Forgot Password ?</Text>
+          </Link>
+          <TouchableOpacity
+            className="bg-col_bg-dark rounded-full p-2 my-2 w-3/6"
+            onPress={() => {
+              router.push("/(auth)/signup");
+            }}
+          >
+            <Text className="text-center text-xl font-semibold">Sign Up</Text>
+          </TouchableOpacity>
+
+          <Text className="text-sm font-semibold">
+            Don't Have an Account ? Sign Up
           </Text>
-        </Link>
-        <Link href={"/(auth)/signup"} className="text-center">
-          <Text className="text-Txt-secondary text-center">
-            Create New Account
-          </Text>
-        </Link>
-      </View>
-    </SafeAreaView>
+        </View>
+      </SafeAreaView>
+    </>
   );
 };
 
