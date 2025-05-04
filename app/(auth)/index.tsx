@@ -10,11 +10,30 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/assets/colors";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "@/FirebaseConfig";
 
 const index = () => {
   const router = useRouter();
 
   const [Seepassword, setSeepassword] = useState(false);
+  const [Email, setEmail] = useState("");
+  const [Password, setPassword] = useState("");
+  const [SeeMsg, SetSeeMsg] = useState(false);
+
+  const login = async () => {
+    await signInWithEmailAndPassword(auth, Email, Password)
+      .then((userCredentials) => {
+        router.push("/(tabs)/home");
+      })
+      .catch((err) => {
+        SetSeeMsg(true);
+        console.log(err.message);
+      });
+  };
 
   return (
     <>
@@ -28,12 +47,23 @@ const index = () => {
           <Text className="text-3xl font-semibold text-Txt">Welcome</Text>
         </View>
         <View className="w-full h-5/6 bg-col_bg absolute bottom-0 rounded-t-[80px] flex-col items-center justify-start py-20 ">
+          {SeeMsg && (
+            <Text className=" text-danger text-xl">
+              {" "}
+              Username Or Password is Incorrect
+            </Text>
+          )}
           <View className="w-5/6 mt-14">
             <Text className="p-2 font-semibold">Username or Email</Text>
 
             <TextInput
               className="bg-col_bg-dark w-full rounded-full px-6 py-"
               placeholder="Enter Email"
+              value={Email}
+              onChangeText={(tex) => {
+                setEmail(tex);
+                SetSeeMsg(false);
+              }}
             ></TextInput>
           </View>
           <View className="w-5/6 mt-4">
@@ -43,6 +73,11 @@ const index = () => {
                 className=" px-6 flex-row justify-between "
                 placeholder="Enter Password"
                 secureTextEntry={!Seepassword}
+                value={Password}
+                onChangeText={(tex) => {
+                  setPassword(tex);
+                  SetSeeMsg(false);
+                }} 
               ></TextInput>
               <TouchableOpacity
                 onPress={() => {
@@ -63,9 +98,7 @@ const index = () => {
           </View>
           <TouchableOpacity
             className="bg-primary rounded-full p-2 mt-20 w-3/6"
-            onPress={() => {
-              router.push("/(tabs)/home");
-            }}
+            onPress={login}
           >
             <Text className="text-center text-xl font-semibold">Log In</Text>
           </TouchableOpacity>
