@@ -1,20 +1,8 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  StatusBar,
-} from "react-native";
+import { View, Text, StatusBar } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import SearchBar from "@/components/searchbar";
-import OptionSelector from "@/components/option_selector";
-import HomeCard from "@/components/homeCard";
-import { Colors } from "@/assets/colors";
-import { Ionicons } from "@expo/vector-icons";
-// import Btn from "@/components/Btn";
 
-const home = () => {
+const transactions = () => {
   return (
     <>
       <StatusBar
@@ -24,15 +12,15 @@ const home = () => {
       />
       <SafeAreaView className="h-full w-full bg-primary ">
         <View className="w-full h-[30%] flex items-center justify-center">
-          <Text className="text-3xl font-semibold text-Txt">Home</Text>
+          <Text className="text-3xl font-semibold text-Txt">Transactions</Text>
         </View>
         <View
           className="w-full h-[70%] bg-col_bg absolute bottom-0 rounded-t-[80px] 
-        "
+      "
         ></View>
       </SafeAreaView>
     </>
   );
 };
 
-export default home;
+export default transactions;

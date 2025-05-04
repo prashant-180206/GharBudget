@@ -87,12 +87,12 @@ const Signup = () => {
   const signUp = async () => {
     if (!validateForm()) return;
     try {
-      const userCredential = createUserWithEmailAndPassword(
+      const userCredentials = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
-      const user = (await userCredential).user;
+      const user = userCredentials.user;
 
       await setDoc(doc(db, "users", user.uid), {
         fullName,
@@ -251,7 +251,6 @@ const Signup = () => {
                 ) : null}
               </View>
 
-              
               <Text className="text-sm mt-4">By Continuing You Agree to</Text>
               <Text className="text-sm font-semibold">
                 Terms and Conditions To Use

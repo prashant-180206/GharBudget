@@ -34,7 +34,7 @@ const index = () => {
         <Text className="w-5/6 text-center font-semibold">Get Started With Us For Managing Your Finance With Ease</Text>
         <TouchableOpacity
             className="bg-primary rounded-full p-2 mt-20 w-3/6"
-            onPress={()=>{router.push('/(auth)/login')}}
+            onPress={()=>{router.push('/(tabs)/home')}}
           >
             <Text className="text-center text-xl font-semibold">Log In</Text>
           </TouchableOpacity>

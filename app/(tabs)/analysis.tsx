@@ -2,7 +2,7 @@ import { View, Text, StatusBar } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-const profile = () => {
+const analysis = () => {
   return (
     <>
       <StatusBar
@@ -12,7 +12,7 @@ const profile = () => {
       />
       <SafeAreaView className="h-full w-full bg-primary ">
         <View className="w-full h-[30%] flex items-center justify-center">
-          <Text className="text-3xl font-semibold text-Txt">Profile</Text>
+          <Text className="text-3xl font-semibold text-Txt">Analysis</Text>
         </View>
         <View
           className="w-full h-[70%] bg-col_bg absolute bottom-0 rounded-t-[80px] 
@@ -23,4 +23,4 @@ const profile = () => {
   )
 }
 
-export default profile
+export default analysis

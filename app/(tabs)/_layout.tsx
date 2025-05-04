@@ -1,102 +1,112 @@
 import { Tabs } from "expo-router";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
+import { View } from "react-native";
 import { Colors } from "@/assets/colors";
-import { Text, View } from "react-native";
 
 export default function TabLayout() {
   return (
     <Tabs
-    initialRouteName="expense"
+      initialRouteName="home"
       screenOptions={{
         tabBarStyle: {
           position: "absolute",
-          left: 20,
-          right: 20,
-          bottom: 20,
-          height: 70, // ⬅️ fixed height looks better
-          borderRadius: 25,
-          backgroundColor: Colors.col_bg.light,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 8 },
-          shadowOpacity: 0.2,
-          shadowRadius: 10,
-          elevation: 10,
-          paddingBottom: 5, // ⬅️ inner padding instead of making height auto
-          paddingTop: 15,
-          padding:10,
+          bottom: 0,
+          height: 100,
+          borderRadius: 40,
+          backgroundColor: Colors.col_bg.dark, // light green background
+          borderTopWidth: 0,
+          paddingTop: 30,
+          elevation: 5,
         },
-        headerShown: false,
         tabBarShowLabel: false,
+        headerShown: false,
       }}
     >
-      {/** Home Tab */}
+      {/* Home */}
       <Tabs.Screen
         name="home"
         options={{
           title: "Home",
           tabBarIcon: ({ focused }) => (
-            <View className="flex flex-col items-center justify-center w-[20vw] ">
-              <Ionicons
-                size={26}
-                name={focused ? "home" : "home-outline"}
-                color={focused ? Colors.primary.DEFAULT : Colors.primary.light.DEFAULT}
-              />
-              <Text className="text-[12px] text-Txt">Home</Text>
+            <View
+              className={`w-16 h-16 rounded-3xl items-center justify-center ${
+                focused ? "bg-primary" : ""
+              }`}
+            >
+              <Ionicons name={"home-outline"} size={35} color={"#000"} />
             </View>
           ),
         }}
       />
 
-      {/** Expense Tab */}
+      {/* Analysis */}
       <Tabs.Screen
-        name="expense"
+        name="analysis"
         options={{
-          title: "Expense",
+          title: "Analysis",
           tabBarIcon: ({ focused }) => (
-            <View className="flex flex-col items-center justify-center w-[20vw] ">
-              <Ionicons
-                size={26}
-                name={focused ? "wallet" : "wallet-outline"}
-                color={focused ? Colors.primary.DEFAULT : Colors.primary.light.DEFAULT}
-              />
-              <Text className="text-[12px] text-Txt">Expense</Text>
+            <View
+              className={`w-16 h-16 rounded-3xl items-center justify-center ${
+                focused ? "bg-primary" : ""
+              }`}
+            >
+              <Ionicons name={"analytics-outline"} size={35} color={"#000"} />
             </View>
           ),
         }}
       />
 
-      {/** Budget Tab */}
+      {/* Transactions */}
       <Tabs.Screen
-        name="budget"
+        name="transactions"
         options={{
-          title: "Budget",
+          title: "Transactions",
           tabBarIcon: ({ focused }) => (
-            <View className="flex flex-col items-center justify-center w-[20vw]">
+            <View
+              className={`w-16 h-16 rounded-3xl items-center justify-center ${
+                focused ? "bg-primary" : ""
+              }`}
+            >
               <Ionicons
-                size={26}
-                name={focused ? "trending-up" : "trending-up-outline"}
-                color={focused ? Colors.primary.DEFAULT : Colors.primary.light.DEFAULT}
+                name={"swap-horizontal-outline"}
+                size={35}
+                color={"#000"}
               />
-              <Text className="text-[12px] text-Txt">Budget</Text>
             </View>
           ),
         }}
       />
 
-      {/** Profile Tab */}
+      {/* Categories */}
+      <Tabs.Screen
+        name="categories"
+        options={{
+          title: "Categories",
+          tabBarIcon: ({ focused }) => (
+            <View
+              className={`w-16 h-16 rounded-3xl items-center justify-center ${
+                focused ? "bg-primary" : ""
+              }`}
+            >
+              <Ionicons name={"layers-outline"} size={35} color={"#000"} />
+            </View>
+          ),
+        }}
+      />
+
+      {/* Profile */}
       <Tabs.Screen
         name="profile"
         options={{
           title: "Profile",
           tabBarIcon: ({ focused }) => (
-            <View className="flex flex-col items-center justify-center w-[20vw]">
-              <Ionicons
-                size={26}
-                name={focused ? "person" : "person-outline"}
-                color={focused ? Colors.primary.DEFAULT : Colors.primary.light.DEFAULT}
-              />
-              <Text className="text-[12px] text-Txt">Profile</Text>
+            <View
+              className={`w-16 h-16 rounded-3xl items-center justify-center ${
+                focused ? "bg-primary" : ""
+              }`}
+            >
+              <Ionicons name={"person-outline"} size={35} color={"#000"} />
             </View>
           ),
         }}
