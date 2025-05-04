@@ -7,9 +7,6 @@ import {
 } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import SearchBar from "@/components/searchbar";
-import OptionSelector from "@/components/option_selector";
-import HomeCard from "@/components/homeCard";
 import { Colors } from "@/assets/colors";
 import { Ionicons } from "@expo/vector-icons";
 // import Btn from "@/components/Btn";
