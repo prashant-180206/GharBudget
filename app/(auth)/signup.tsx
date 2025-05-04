@@ -5,7 +5,16 @@ import {
   TextInput,
   TouchableOpacity,
   StatusBar,
+  Alert,
 } from "react-native";
+import {
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from "react-native";
+
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -77,23 +86,27 @@ const Signup = () => {
 
   const signUp = async () => {
     if (!validateForm()) return;
-    try{
-      const userCredential =createUserWithEmailAndPassword(auth,email,password)
-      const user = (await userCredential).user
+    try {
+      const userCredential = createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = (await userCredential).user;
 
-      await setDoc(doc(db,'users',user.uid),{
+      await setDoc(doc(db, "users", user.uid), {
         fullName,
         mobile,
         email,
         password,
-        Created_at :new Date(),
-      })
+        Created_at: new Date(),
+      });
 
-      router.push('/(auth)')
-    }catch{
-      console.log('error occured gvtvv')
+      router.push("/(auth)/login");
+    } catch {
+      Alert.alert("Error Signing In");
+      router.push("/(auth)/login");
     }
-    router.push('/(auth)')
   };
 
   return (
@@ -110,131 +123,158 @@ const Signup = () => {
           </Text>
         </View>
 
-        <View className="w-full h-5/6 bg-col_bg absolute bottom-0 rounded-t-[80px] flex-col items-center justify-start py-10">
-          <View className="w-5/6 mb-4">
-            <Text className="p-2 font-semibold">Full Name</Text>
-            <TextInput
-              className="bg-col_bg-dark w-full rounded-full px-6 py-2"
-              placeholder="Enter Full name"
-              value={fullName}
-              onChangeText={(text) => {
-                setFullName(text);
-                setErrors((prev) => ({ ...prev, fullName: "" })); // Clear error on input change
-              }}
-            />
-            {errors.fullName ? (
-              <Text className="text-red-500 text-sm">{errors.fullName}</Text>
-            ) : null}
-          </View>
-
-          <View className="w-5/6 mb-4">
-            <Text className="p-2 font-semibold">Email</Text>
-            <TextInput
-              className="bg-col_bg-dark w-full rounded-full px-6 py-2"
-              placeholder="Enter Email"
-              value={email}
-              onChangeText={(text) => {
-                setEmail(text);
-                setErrors((prev) => ({ ...prev, email: "" })); // Clear error on input change
-              }}
-              keyboardType="email-address"
-            />
-            {errors.email ? (
-              <Text className="text-red-500 text-sm">{errors.email}</Text>
-            ) : null}
-          </View>
-
-          <View className="w-5/6 mb-4">
-            <Text className="p-2 font-semibold">Mobile Number</Text>
-            <TextInput
-              className="bg-col_bg-dark w-full rounded-full px-6 py-2"
-              placeholder="Enter Mobile Number"
-              value={mobile}
-              onChangeText={(text) => {
-                setMobile(text);
-                setErrors((prev) => ({ ...prev, mobile: "" })); // Clear error on input change
-              }}
-              keyboardType="numeric"
-              maxLength={10}
-            />
-            {errors.mobile ? (
-              <Text className="text-red-500 text-sm">{errors.mobile}</Text>
-            ) : null}
-          </View>
-
-          <View className="w-5/6 mb-4">
-            <Text className="p-2 font-semibold">Password</Text>
-            <View className="bg-col_bg-dark rounded-full flex-row justify-between items-center">
-              <TextInput
-                className="px-6 w-full"
-                placeholder="Enter Password"
-                value={password}
-                onChangeText={(text) => {
-                  setPassword(text);
-                  setErrors((prev) => ({ ...prev, password: "" })); // Clear error on input change
-                }}
-                secureTextEntry={!seePassword}
-              />
-              <TouchableOpacity onPress={() => setSeePassword((prev) => !prev)}>
-                <Ionicons
-                  name={seePassword ? "eye" : "eye-off"}
-                  color={Colors.Txt.secondary}
-                  size={28}
-                />
-              </TouchableOpacity>
-            </View>
-            {errors.password ? (
-              <Text className="text-red-500 text-sm">{errors.password}</Text>
-            ) : null}
-          </View>
-
-          <View className="w-5/6 mb-4">
-            <Text className="p-2 font-semibold">Confirm Password</Text>
-            <View className="bg-col_bg-dark rounded-full flex-row justify-between items-center">
-              <TextInput
-                className="px-6 w-full"
-                placeholder="Confirm Password"
-                value={confirmPassword}
-                onChangeText={(text) => {
-                  setConfirmPassword(text);
-                  setErrors((prev) => ({ ...prev, confirmPassword: "" })); // Clear error on input change
-                }}
-                secureTextEntry={!seePassword}
-              />
-              <TouchableOpacity onPress={() => setSeePassword((prev) => !prev)}>
-                <Ionicons
-                  name={seePassword ? "eye" : "eye-off"}
-                  color={Colors.Txt.secondary}
-                  size={28}
-                />
-              </TouchableOpacity>
-            </View>
-            {errors.confirmPassword ? (
-              <Text className="text-red-500 text-sm">
-                {errors.confirmPassword}
-              </Text>
-            ) : null}
-          </View>
-
-          <Text className="text-sm">By Continuing You Agree to</Text>
-          <Text className="text-sm font-semibold">
-            Terms and Conditions To Use
-          </Text>
-
-          <TouchableOpacity
-            className="bg-primary rounded-full p-2 mt-4 w-3/6"
-            onPress={signUp}
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            className="w-full h-5/6 bg-col_bg absolute bottom-0 rounded-t-[80px]"
           >
-            <Text className="text-center text-xl font-semibold">Sign Up</Text>
-          </TouchableOpacity>
+            <ScrollView
+              contentContainerStyle={{
+                flexGrow: 1,
+                alignItems: "center",
+                justifyContent: "flex-start",
+                paddingVertical: 10,
+              }}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+            >
+              <View className="w-5/6 mb-4 mt-4">
+                <Text className="p-2 font-semibold">Full Name</Text>
+                <TextInput
+                  className="bg-col_bg-dark w-full rounded-full px-6 py-2"
+                  placeholder="Enter Full name"
+                  value={fullName}
+                  onChangeText={(text) => {
+                    setFullName(text);
+                    setErrors((prev) => ({ ...prev, fullName: "" })); // Clear error on input change
+                  }}
+                />
+                {errors.fullName ? (
+                  <Text className="text-red-500 text-sm">
+                    {errors.fullName}
+                  </Text>
+                ) : null}
+              </View>
 
-          <Link href="/(auth)" className="m-2 text-sm font-semibold">
-            <Text>
-              Already have an Account?{" "}
-              <Text className="text-blue-400">Log In</Text>
-            </Text>
-          </Link>
-        </View>
+              <View className="w-5/6 mb-4">
+                <Text className="p-2 font-semibold">Email</Text>
+                <TextInput
+                  className="bg-col_bg-dark w-full rounded-full px-6 py-2"
+                  placeholder="Enter Email"
+                  value={email}
+                  onChangeText={(text) => {
+                    setEmail(text);
+                    setErrors((prev) => ({ ...prev, email: "" })); // Clear error on input change
+                  }}
+                  keyboardType="email-address"
+                />
+                {errors.email ? (
+                  <Text className="text-red-500 text-sm">{errors.email}</Text>
+                ) : null}
+              </View>
+
+              <View className="w-5/6 mb-4">
+                <Text className="p-2 font-semibold">Mobile Number</Text>
+                <TextInput
+                  className="bg-col_bg-dark w-full rounded-full px-6 py-2"
+                  placeholder="Enter Mobile Number"
+                  value={mobile}
+                  onChangeText={(text) => {
+                    setMobile(text);
+                    setErrors((prev) => ({ ...prev, mobile: "" })); // Clear error on input change
+                  }}
+                  keyboardType="numeric"
+                  maxLength={10}
+                />
+                {errors.mobile ? (
+                  <Text className="text-red-500 text-sm">{errors.mobile}</Text>
+                ) : null}
+              </View>
+
+              <View className="w-5/6 mt-4">
+                <Text className="p-2 font-semibold">Password</Text>
+                <View
+                  className="bg-col_bg-dark  rounded-full flex-row justify-between items-center px-4
+                "
+                >
+                  <TextInput
+                    className=" flex-row justify-between "
+                    placeholder="Enter Password"
+                    secureTextEntry={!seePassword}
+                    value={password}
+                    onChangeText={(tex) => {
+                      setPassword(tex);
+                      setErrors((prev) => ({ ...prev, password: "" })); // Clear error on input change
+                    }}
+                  ></TextInput>
+                  <TouchableOpacity
+                    onPress={() => setSeePassword((prev) => !prev)}
+                  >
+                    <Ionicons
+                      name={seePassword ? "eye" : "eye-off"}
+                      color={Colors.Txt.secondary}
+                      size={28}
+                    ></Ionicons>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View className="w-5/6 mt-4">
+                <Text className="p-2 font-semibold">Confirm Password</Text>
+                <View
+                  className="bg-col_bg-dark  rounded-full flex-row justify-between items-center px-4
+                "
+                >
+                  <TextInput
+                    className=" flex-row justify-between "
+                    placeholder="Confirm Password"
+                    secureTextEntry={!seePassword}
+                    value={confirmPassword}
+                    onChangeText={(tex) => {
+                      setConfirmPassword(tex);
+                      setErrors((prev) => ({ ...prev, confirmPassword: "" })); // Clear error on input change
+                    }}
+                  ></TextInput>
+                  <TouchableOpacity
+                    onPress={() => setSeePassword((prev) => !prev)}
+                  >
+                    <Ionicons
+                      name={seePassword ? "eye" : "eye-off"}
+                      color={Colors.Txt.secondary}
+                      size={28}
+                    ></Ionicons>
+                  </TouchableOpacity>
+                </View>
+                {errors.confirmPassword ? (
+                  <Text className="text-red-500 text-sm">
+                    {errors.confirmPassword}
+                  </Text>
+                ) : null}
+              </View>
+
+              
+              <Text className="text-sm mt-4">By Continuing You Agree to</Text>
+              <Text className="text-sm font-semibold">
+                Terms and Conditions To Use
+              </Text>
+
+              <TouchableOpacity
+                className="bg-primary rounded-full p-2 mt-4 w-3/6"
+                onPress={signUp}
+              >
+                <Text className="text-center text-xl font-semibold">
+                  Sign Up
+                </Text>
+              </TouchableOpacity>
+
+              <Link href="/(auth)/login" className="m-2 text-sm font-semibold">
+                <Text>
+                  Already have an Account?{" "}
+                  <Text className="text-blue-400">Log In</Text>
+                </Text>
+              </Link>
+            </ScrollView>
+          </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
       </SafeAreaView>
     </>
   );

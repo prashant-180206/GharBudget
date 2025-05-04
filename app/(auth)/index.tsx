@@ -4,6 +4,7 @@ import {
   TextInput,
   TouchableOpacity,
   StatusBar,
+  Image,
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -19,22 +20,6 @@ import { auth } from "@/FirebaseConfig";
 const index = () => {
   const router = useRouter();
 
-  const [Seepassword, setSeepassword] = useState(false);
-  const [Email, setEmail] = useState("");
-  const [Password, setPassword] = useState("");
-  const [SeeMsg, SetSeeMsg] = useState(false);
-
-  const login = async () => {
-    await signInWithEmailAndPassword(auth, Email, Password)
-      .then((userCredentials) => {
-        router.push("/(tabs)/home");
-      })
-      .catch((err) => {
-        SetSeeMsg(true);
-        console.log(err.message);
-      });
-  };
-
   return (
     <>
       <StatusBar
@@ -42,72 +27,18 @@ const index = () => {
         translucent
         backgroundColor="transparent"
       />
-      <SafeAreaView className="h-full w-full bg-primary ">
-        <View className="w-full h-1/6 flex items-center justify-center">
-          <Text className="text-3xl font-semibold text-Txt">Welcome</Text>
-        </View>
-        <View className="w-full h-5/6 bg-col_bg absolute bottom-0 rounded-t-[80px] flex-col items-center justify-start py-20 ">
-          {SeeMsg && (
-            <Text className=" text-danger text-xl">
-              {" "}
-              Username Or Password is Incorrect
-            </Text>
-          )}
-          <View className="w-5/6 mt-14">
-            <Text className="p-2 font-semibold">Username or Email</Text>
+      <SafeAreaView className="h-full w-full bg-[#cddcd5] flex flex-col items-center justify-center">
 
-            <TextInput
-              className="bg-col_bg-dark w-full rounded-full px-6 py-"
-              placeholder="Enter Email"
-              value={Email}
-              onChangeText={(tex) => {
-                setEmail(tex);
-                SetSeeMsg(false);
-              }}
-            ></TextInput>
-          </View>
-          <View className="w-5/6 mt-4">
-            <Text className="p-2 font-semibold">Password</Text>
-            <View className="bg-col_bg-dark  rounded-full flex-row justify-between items-center">
-              <TextInput
-                className=" px-6 flex-row justify-between "
-                placeholder="Enter Password"
-                secureTextEntry={!Seepassword}
-                value={Password}
-                onChangeText={(tex) => {
-                  setPassword(tex);
-                  SetSeeMsg(false);
-                }}
-              ></TextInput>
-              <TouchableOpacity
-                onPress={() => {
-                  if (Seepassword) {
-                    setSeepassword(false);
-                  } else {
-                    setSeepassword(true);
-                  }
-                }}
-              >
-                <Ionicons
-                  name={Seepassword ? "eye" : "eye-off"}
-                  color={Colors.Txt.secondary}
-                  size={28}
-                ></Ionicons>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <TouchableOpacity
+        <Image source={require('../../assets/logo.jpg')} style={{width:400,height:400}}></Image>
+        <Text className="mb-4 text-xl font-bold">Finane Made Easy For Homemakers</Text>
+        <Text className="w-5/6 text-center font-semibold">Get Started With Us For Managing Your Finance With Ease</Text>
+        <TouchableOpacity
             className="bg-primary rounded-full p-2 mt-20 w-3/6"
-            onPress={login}
+            onPress={()=>{router.push('/(auth)/login')}}
           >
             <Text className="text-center text-xl font-semibold">Log In</Text>
           </TouchableOpacity>
-          <Link
-            href={"/(auth)/forgot_password"}
-            className="m-2 text-sm font-semibold"
-          >
-            <Text>Forgot Password ?</Text>
-          </Link>
+         
           <TouchableOpacity
             className="bg-col_bg-dark rounded-full p-2 my-2 w-3/6"
             onPress={() => {
@@ -116,11 +47,7 @@ const index = () => {
           >
             <Text className="text-center text-xl font-semibold">Sign Up</Text>
           </TouchableOpacity>
-
-          <Text className="text-sm font-semibold">
-            Don't Have an Account ? Sign Up
-          </Text>
-        </View>
+        
       </SafeAreaView>
     </>
   );
