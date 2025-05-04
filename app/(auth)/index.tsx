@@ -77,7 +77,7 @@ const index = () => {
                 onChangeText={(tex) => {
                   setPassword(tex);
                   SetSeeMsg(false);
-                }} 
+                }}
               ></TextInput>
               <TouchableOpacity
                 onPress={() => {
