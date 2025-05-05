@@ -13,7 +13,7 @@ import { useRouter } from "expo-router";
 // import Btn from "@/components/Btn";
 
 const home = () => {
-  const router =useRouter()
+  const router = useRouter();
   return (
     <>
       <StatusBar
@@ -28,15 +28,7 @@ const home = () => {
         <View
           className="w-full h-[70%] bg-col_bg absolute bottom-0 rounded-t-[80px] 
         "
-        >
-          <TouchableOpacity 
-          onPress={()=>{
-            router.push()
-          }}
-          
-          />
-
-        </View>
+        ></View>
       </SafeAreaView>
     </>
   );
