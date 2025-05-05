@@ -7,7 +7,6 @@ import { Colors } from "@/assets/colors";
 export default function TabLayout() {
   return (
     <Tabs
-      initialRouteName="home"
       screenOptions={{
         tabBarStyle: {
           position: "absolute",

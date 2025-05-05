@@ -17,15 +17,17 @@ const analysis = () => {
           <Text className="text-3xl font-semibold text-Txt">Analysis</Text>
         </View>
         <View
-          className="w-full h-[70%] bg-col_bg absolute bottom-0 rounded-t-[80px] 
+          className="w-full h-[70%] bg-col_bg absolute bottom-0 rounded-t-[80px] flex flex-col justify-center items-center
         "
         >
           <TouchableOpacity
             onPress={() => {
               router.push("/(tabs)/analysis/changebudget");
             }}
+            className="bg-primary p-2 rounded-full text-Txt"
+
           >
-            <Text>Change budget</Text>
+            <Text className="text-xl mx-4 font-semibold text-Txt">Change budget</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
