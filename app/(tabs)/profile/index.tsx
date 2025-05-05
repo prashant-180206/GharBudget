@@ -19,14 +19,18 @@ export default function ProfileScreen() {
 
   return (
     <>
-      <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+      <StatusBar
+        barStyle="light-content"
+        translucent
+        backgroundColor="transparent"
+      />
       <SafeAreaView className="flex-1 bg-primary">
         {/* Top Green Header */}
         <View className="h-[20%] items-center justify-center bg-primary rounded-b-[60px] relative">
           {/* Back Icon */}
           <TouchableOpacity
             className="absolute top-10 left-5"
-            onPress={() => router.push('/(tabs)/home')}
+            onPress={() => router.push("/(tabs)/home")}
           >
             <Ionicons name="arrow-back" size={28} color="white" />
           </TouchableOpacity>
@@ -53,18 +57,28 @@ export default function ProfileScreen() {
 
           {/* Name and ID */}
           <View className="items-center mb-6">
-            <Text className="text-lg font-bold text-heading-secondary">John Smith</Text>
+            <Text className="text-lg font-bold text-heading-secondary">
+              John Smith
+            </Text>
             <Text className="text-sm text-Txt">ID: 25030024</Text>
           </View>
 
           {/* Menu Items */}
           {[
-            { title: "Edit Profile", icon: "person-outline", screen: "editprofile" },
-            { title: "Security", icon: "shield-checkmark-outline", screen: "security" },
+            {
+              title: "Edit Profile",
+              icon: "person-outline",
+              screen: "editprofile",
+            },
+            {
+              title: "Security",
+              icon: "shield-checkmark-outline",
+              screen: "security",
+            },
             { title: "Setting", icon: "settings-outline", screen: "settings" },
             { title: "Help", icon: "help-circle-outline", screen: "help" },
             { title: "Logout", icon: "log-out-outline", logout: true },
-          ].map(({ title, icon , screen, logout }, index) => (
+          ].map(({ title, icon, screen, logout }, index) => (
             <TouchableOpacity
               key={index}
               onPress={() =>
@@ -72,7 +86,7 @@ export default function ProfileScreen() {
               }
               className="flex-row items-center bg-white rounded-xl px-4 py-3 mb-4 shadow"
             >
-              <Ionicons name={icon} size={24} color="#1E90FF" className="mr-4" />
+              {/* <Ionicons name={icon} size={24} color="#1E90FF" className="mr-4" /> */}
               <Text className="text-base font-medium text-[#222]">{title}</Text>
             </TouchableOpacity>
           ))}
@@ -89,7 +103,7 @@ export default function ProfileScreen() {
               { icon: "person-circle-outline" },
             ].map((item, i) => (
               <TouchableOpacity key={i}>
-                <Ionicons name={item.icon} size={24} color="#1E90FF" />
+                {/* <Ionicons name={item.icon} size={24} color="#1E90FF" /> */}
               </TouchableOpacity>
             ))}
           </View>

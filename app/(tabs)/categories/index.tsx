@@ -13,11 +13,11 @@ const transactions = () => {
         backgroundColor="transparent"
       />
       <SafeAreaView className="h-full w-full bg-primary ">
-        <View className="w-full h-[30%] flex items-center justify-center">
+        <View className="w-full h-[25%] flex items-center justify-center">
           <Text className="text-3xl font-semibold text-Txt">Categories</Text>
         </View>
         <View
-          className="w-full h-[70%] bg-col_bg absolute bottom-0 rounded-t-[80px] 
+          className="w-full h-[75%] bg-col_bg absolute bottom-0 rounded-t-[80px] 
       "
         >
           <TouchableOpacity

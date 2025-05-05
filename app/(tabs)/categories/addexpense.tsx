@@ -23,7 +23,7 @@ const addexpense = () => {
           >
             <TouchableOpacity 
   
-            onPress={()=>{router.push('/(tabs)/categories')}}
+            onPress={()=>{router.push('/(tabs)/categories/daily')}}
             
             >
               <Text>Move back</Text>

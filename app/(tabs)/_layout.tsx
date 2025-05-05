@@ -3,6 +3,7 @@ import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { View } from "react-native";
 import { Colors } from "@/assets/colors";
+import CustomHeader from "@/components/CustomHeader";
 
 export default function TabLayout() {
   return (
@@ -43,6 +44,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="analysis"
         options={{
+          headerShown: true,
+          header: () => <CustomHeader title="Analysis" />,
           title: "Analysis",
           tabBarIcon: ({ focused }) => (
             <View
@@ -60,6 +63,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="transactions"
         options={{
+          headerShown: true,
+          header: () => <CustomHeader title="Transactions" />,
           title: "Transactions",
           tabBarIcon: ({ focused }) => (
             <View
@@ -81,6 +86,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="categories"
         options={{
+          headerShown: true,
+          header: () => <CustomHeader title="Categories" />,
           title: "Categories",
           tabBarIcon: ({ focused }) => (
             <View
@@ -98,6 +105,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
+          headerShown: true,
+          header: () => <CustomHeader title="Profile" />,
           title: "Profile",
           tabBarIcon: ({ focused }) => (
             <View
