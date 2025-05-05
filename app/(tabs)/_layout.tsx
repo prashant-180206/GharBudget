@@ -105,8 +105,6 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          headerShown: true,
-          header: () => <CustomHeader title="Profile" />,
           title: "Profile",
           tabBarIcon: ({ focused }) => (
             <View
