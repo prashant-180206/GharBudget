@@ -25,26 +25,8 @@ export default function ProfileScreen() {
         backgroundColor="transparent"
       />
       <SafeAreaView className="flex-1 bg-primary">
-        {/* Top Green Header */}
-        <View className="h-[20%] items-center justify-center bg-primary rounded-b-[60px] relative">
-          {/* Back Icon */}
-          <TouchableOpacity
-            className="absolute top-10 left-5"
-            onPress={() => router.push("/(tabs)/home")}
-          >
-            <Ionicons name="arrow-back" size={28} color="white" />
-          </TouchableOpacity>
-
-          {/* Notification Icon */}
-          <TouchableOpacity className="absolute top-10 right-5">
-            <Ionicons name="notifications-outline" size={26} color="white" />
-          </TouchableOpacity>
-
-          <Text className="text-white text-xl font-bold mt-2">Profile</Text>
-        </View>
-
         {/* White Layer Content */}
-        <View className="flex-1 bg-col_bg absolute bottom-0 w-full h-[80%] rounded-t-[60px] pt-20 px-6">
+        <View className="flex-1 bg-col_bg absolute bottom-0 w-full h-[90%] rounded-t-[60px] pt-20 px-6">
           {/* Profile Image */}
           <View className="absolute -top-14 self-center">
             <Image

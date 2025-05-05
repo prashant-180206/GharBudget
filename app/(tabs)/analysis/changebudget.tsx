@@ -14,6 +14,7 @@ import { useRouter } from "expo-router";
 import DropdownInput from "@/components/dropdown";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { auth, db } from "@/FirebaseConfig";
+import { ExpenseCategories } from "@/assets/constants";
 
 type BudgetItem = {
   name: string;
@@ -28,21 +29,6 @@ const changebudget = () => {
   const [decided, setDecided] = useState<BudgetItem[]>([]);
   const [amount, setAmount] = useState("");
 
-  const options = [
-    { label: "Daily", value: "daily" },
-    { label: "Groceries", value: "groceries" },
-    { label: "Food", value: "food" },
-    { label: "Travel", value: "travel" },
-    { label: "Rent", value: "rent" },
-    { label: "Health", value: "health" },
-    { label: "Entertainment", value: "entertainment" },
-    { label: "Bills", value: "bills" },
-    { label: "Maintenance", value: "maintenance" },
-    { label: "Subscriptions", value: "subscriptions" },
-    { label: "Savings", value: "savings" },
-    { label: "Other", value: "other" },
-  ];
-
   const addAmount = () => {
     if (!selected || !amount) return;
 
@@ -53,7 +39,7 @@ const changebudget = () => {
   const updateBudget = async () => {
     try {
       const userId = auth.currentUser?.uid;
-      
+
       const now = new Date();
       const year = now.getFullYear();
       const month = now.getMonth() + 1; // January is 0
@@ -113,14 +99,14 @@ const changebudget = () => {
             <View className="flex flex-row items-center justify-center">
               <View className="w-4/6">
                 <DropdownInput
-                  items={options}
+                  items={ExpenseCategories}
                   value={selected}
                   onChange={(val) => setSelected(val)}
                   placeholder="Choose a category"
                 />
               </View>
               <TextInput
-                className="bg-col_bg-dark h-12 rounded-full p-3 w-2/6"
+                className="bg-col_bg-dark h-12 rounded-full p-4 w-2/6"
                 placeholder="Amount"
                 keyboardType="numeric"
                 value={amount}

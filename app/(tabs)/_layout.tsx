@@ -86,8 +86,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="categories"
         options={{
-          headerShown: true,
-          header: () => <CustomHeader title="Categories" />,
+          
           title: "Categories",
           tabBarIcon: ({ focused }) => (
             <View

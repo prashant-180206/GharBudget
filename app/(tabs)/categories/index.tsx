@@ -1,10 +1,18 @@
-import { View, Text, StatusBar, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StatusBar,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
+import CategoryGrid from "@/components/CategoryGrid";
 
-const transactions = () => {
+const Transactions = () => {
   const router = useRouter();
+
   return (
     <>
       <StatusBar
@@ -12,25 +20,36 @@ const transactions = () => {
         translucent
         backgroundColor="transparent"
       />
-      <SafeAreaView className="h-full w-full bg-primary ">
-        <View className="w-full h-[25%] flex items-center justify-center">
+      <SafeAreaView className="flex-1 bg-primary">
+        {/* Header */}
+        <View className="items-center justify-center py-6">
           <Text className="text-3xl font-semibold text-Txt">Categories</Text>
         </View>
-        <View
-          className="w-full h-[75%] bg-col_bg absolute bottom-0 rounded-t-[80px] 
-      "
-        >
-          <TouchableOpacity
-            onPress={() => {
-              router.push("/(tabs)/categories/addexpense");
+
+        {/* Scrollable Content */}
+        <View className="flex-1 bg-col_bg rounded-t-[80px] pt-0 px-4 pb-32">
+          <ScrollView
+            className="p-4 my-4"
+            contentContainerStyle={{
+              paddingBottom: 40,
             }}
+            showsVerticalScrollIndicator={false}
           >
-            <Text>Add Expense</Text>
-          </TouchableOpacity>
+            <CategoryGrid />
+
+            <TouchableOpacity
+              onPress={() => router.push("/(tabs)/categories/addexpense")}
+              className="bg-primary p-3 rounded-full mt-8 mx-auto px-6"
+            >
+              <Text className="text-Txt text-base font-semibold text-center">
+                Add Expense
+              </Text>
+            </TouchableOpacity>
+          </ScrollView>
         </View>
       </SafeAreaView>
     </>
   );
 };
 
-export default transactions;
+export default Transactions;
