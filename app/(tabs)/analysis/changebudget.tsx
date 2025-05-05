@@ -12,7 +12,7 @@ import React, { useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import DropdownInput from "@/components/dropdown";
-import { addDoc, collection } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { auth, db } from "@/FirebaseConfig";
 
 type BudgetItem = {
@@ -52,13 +52,26 @@ const changebudget = () => {
 
   const updateBudget = async () => {
     try {
-      const docRef = await addDoc(collection(db, "budget"), {
+      const userId = auth.currentUser?.uid;
+      
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth() + 1; // January is 0
+      const docId = `${userId}_${year}_${month}`;
+
+      const budgetRef = doc(db, "budget", docId);
+      const existingDoc = await getDoc(budgetRef);
+
+      await setDoc(budgetRef, {
         Budget: decided,
         Total_Budget: totalBudget,
-        User_Id: auth.currentUser?.uid,
-        Created_At: new Date(),
-        Updated_At: new Date(),
+        User_Id: userId,
+        Year: year,
+        Month: month,
+        Created_At: existingDoc.exists() ? existingDoc.data().Created_At : now,
+        Updated_At: now,
       });
+
       router.push("/(tabs)/analysis");
     } catch (err) {
       Alert.alert("Error Changing Budget");

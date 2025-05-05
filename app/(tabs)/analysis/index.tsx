@@ -27,7 +27,7 @@ const analysis = () => {
             className="bg-primary p-2 rounded-full text-Txt"
 
           >
-            <Text className="text-xl mx-4 font-semibold text-Txt">Change budget</Text>
+            <Text className="text-xl mx-4 font-semibold text-Txt">Modify Budget</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>

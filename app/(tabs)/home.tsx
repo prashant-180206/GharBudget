@@ -9,9 +9,11 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "@/assets/colors";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 // import Btn from "@/components/Btn";
 
 const home = () => {
+  const router =useRouter()
   return (
     <>
       <StatusBar
@@ -26,7 +28,15 @@ const home = () => {
         <View
           className="w-full h-[70%] bg-col_bg absolute bottom-0 rounded-t-[80px] 
         "
-        ></View>
+        >
+          <TouchableOpacity 
+          onPress={()=>{
+            router.push()
+          }}
+          
+          />
+
+        </View>
       </SafeAreaView>
     </>
   );

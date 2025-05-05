@@ -41,7 +41,7 @@ const index = () => {
         <TouchableOpacity
           className="bg-primary rounded-full p-2 mt-20 w-3/6"
           onPress={() => {
-            router.push("/(tabs)/home");
+            router.push("/(auth)/login");
           }}
         >
           <Text className="text-center text-xl font-semibold">Log In</Text>
