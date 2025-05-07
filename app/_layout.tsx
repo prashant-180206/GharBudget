@@ -24,7 +24,9 @@ export default function RootLayout() {
   }
 
   return (
-    <Stack initialRouteName={user ? "(tabs)" : "(auth)"}>
+    <Stack initialRouteName={user ? "(tabs)" : "(auth)"}
+    
+    >
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
     </Stack>

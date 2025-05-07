@@ -33,7 +33,7 @@ const index = () => {
           style={{ width: 400, height: 400 }}
         ></Image>
         <Text className="mb-4 text-xl font-bold">
-          Finane Made Easy For Homemakers
+          Finance Made Easy For Homemakers
         </Text>
         <Text className="w-5/6 text-center font-semibold">
           Get Started With Us For Managing Your Finance With Ease
