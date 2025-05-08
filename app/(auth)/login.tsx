@@ -30,11 +30,9 @@ const index = () => {
 
     await signInWithEmailAndPassword(auth, Email.trim(), Password.trim())
       .then((userCredential) => {
-        console.log("Login successful", userCredential.user.email);
         router.push("/(tabs)/home");
       })
       .catch((err) => {
-        console.error("Login error:", err.code, err.message);
         Alert.alert("Login Error", err.message);
       });
   };

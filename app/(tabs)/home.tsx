@@ -19,94 +19,20 @@ import {
   DocumentData,
   getDoc,
   getDocs,
-  limit,
-  orderBy,
   query,
-  Timestamp,
   where,
 } from "firebase/firestore";
-import LoadingBar from "@/components/loadingBar";
 
-import CustomPieChart from "@/components/ringPieChart";
-import CustomHalfPieChart from "@/components/ringPieChart";
-import CircularLoader from "@/components/circularLoader";
-import Chart from "@/components/chart";
 import { useIsFocused } from "@react-navigation/native";
 import Dashboard from "@/components/tabs/Dashboard";
+import { useAppData } from "@/context/AppContext";
 
 // import Btn from "@/components/Btn";
 
 const home = () => {
   const router = useRouter();
-  const [Data, setData] = useState<DocumentData>({});
-  const [TotalIncome, setTotalIncome] = useState(0);
-  const [TotalAmount, setTotalAmount] = useState(0);
 
-  const isfocused = useIsFocused();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const userId = auth.currentUser?.uid;
-
-        if (!userId) {
-          Alert.alert("Authentication Error", "User is not authenticated.");
-          return;
-        }
-
-        // Fetch user document
-        const userDocRef = doc(db, "users", userId);
-        const userDataDoc = await getDoc(userDocRef);
-
-        if (!userDataDoc.exists()) {
-          Alert.alert("Data Error", "User data not found.");
-          return;
-        }
-
-        // Fetch expenses
-        const expenseQuery = query(
-          collection(db, "expenses"),
-          where("userId", "==", userId)
-        );
-        const expenseSnapshot = await getDocs(expenseQuery);
-
-        // Fetch income
-        const incomeQuery = query(
-          collection(db, "income"),
-          where("userId", "==", userId)
-        );
-        const incomeSnapshot = await getDocs(incomeQuery);
-
-        // Set user data
-        const userData = userDataDoc.data();
-        setData(userData);
-
-        // Calculate expenses
-        let totalExpenses = 0;
-        expenseSnapshot.forEach((doc) => {
-          const amt = doc.data().Amount;
-          if (typeof amt === "number") totalExpenses += amt;
-        });
-        setTotalAmount(totalExpenses);
-
-        // Calculate income
-        let totalIncomeVal = 0;
-        incomeSnapshot.forEach((doc) => {
-          const amt = doc.data().Amount;
-          if (typeof amt === "number") totalIncomeVal += amt;
-        });
-        setTotalIncome(totalIncomeVal);
-      } catch (error: any) {
-        console.error("Error fetching data:", error);
-        Alert.alert(
-          "Error",
-          error.message || "Failed to fetch data. Please try again later."
-        );
-      }
-    };
-
-    fetchData();
-  }, [isfocused]);
+  const { userData } = useAppData();
 
   return (
     <>
@@ -120,7 +46,7 @@ const home = () => {
           <View className="w-5/6 flex flex-row items-center justify-between m-3">
             <View>
               <Text className="text-heading font-bold text-2xl ">
-                Hello ! , {Data.fullName?.split(" ")[0]}
+                Hello !, {userData?.fullName.split(" ")[0]}
               </Text>
               <Text className="text-heading-secondary font-semibold">
                 Welcome Back
@@ -144,12 +70,7 @@ const home = () => {
               router.push("/(tabs)/Account_Details");
             }}
           >
-            <Dashboard
-              totalBalance={TotalIncome ?? "--"}
-              totalExpense={TotalAmount ?? "--"}
-              loadingBarBg={Colors.Txt.DEFAULT}
-              loadingBarFill="white"
-            />
+            <Dashboard />
           </TouchableOpacity>
         </View>
 

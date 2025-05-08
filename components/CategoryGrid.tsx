@@ -20,18 +20,18 @@ type Category = {
 const CategoryGrid = () => {
 
   const categories: Category[] = [
-    { label: "Daily", icon: "calendar-outline", route: "daily" },
-    { label: "Groceries", icon: "cart-outline", route: "groceries" },
-    { label: "Food", icon: "fast-food-outline", route: "food" },
-    { label: "Travel", icon: "car-outline", route: "travel" },
-    { label: "Rent", icon: "home-outline", route: "rent" },
-    { label: "Health", icon: "medkit-outline", route: "health" },
-    { label: "Entertainment", icon: "tv-outline", route: "entertainment" },
-    { label: "Bills", icon: "receipt-outline", route: "bills" },
-    { label: "Maintenance", icon: "build-outline", route: "maintenance" },
-    { label: "Subscriptions", icon: "repeat-outline", route: "subscriptions" },
-    { label: "Savings", icon: "wallet-outline", route: "savings" },
-    { label: "Other", icon: "ellipsis-horizontal-outline", route: "other" },
+    { label: "Food", icon: "fast-food-outline", route: "Food" },
+    { label: "Daily", icon: "calendar-outline", route: "Daily" },
+    { label: "Groceries", icon: "cart-outline", route: "Groceries" },
+    { label: "Travel", icon: "car-outline", route: "Travel" },
+    { label: "Rent", icon: "home-outline", route: "Rent" },
+    { label: "Health", icon: "medkit-outline", route: "Health" },
+    { label: "Entertainment", icon: "tv-outline", route: "Entertainment" },
+    { label: "Bills", icon: "receipt-outline", route: "Bills" },
+    { label: "Maintenance", icon: "build-outline", route: "Maintenance" },
+    { label: "Subscriptions", icon: "repeat-outline", route: "Subscriptions" },
+    { label: "Savings", icon: "wallet-outline", route: "Savings" },
+    { label: "Other", icon: "ellipsis-horizontal-outline", route: "Other" },
   ];
   
   const router = useRouter();

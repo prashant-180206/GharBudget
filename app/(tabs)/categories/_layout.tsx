@@ -11,14 +11,9 @@ export default function RootLayout() {
           header: () => <CustomHeader title="Categories" />,
         }}
       />
-      <Stack.Screen
-        name="addexpense"
-        options={{
-          headerShown: true,
-          header: () => <CustomHeader title="Add Expense" />,
-        }}
-      />
+      
       <Stack.Screen name="[category]" options={{ headerShown: false }} />
+      <Stack.Screen name="Savings" options={{ headerShown: false }} />
     </Stack>
   );
 }

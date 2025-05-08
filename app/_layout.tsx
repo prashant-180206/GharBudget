@@ -4,6 +4,7 @@ import { auth } from "@/FirebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { User } from "firebase/auth";
+import { AppProvider } from "@/context/AppContext";
 
 export default function RootLayout() {
   const [user, setUser] = useState<User | null>(null);
@@ -24,11 +25,11 @@ export default function RootLayout() {
   }
 
   return (
-    <Stack initialRouteName={user ? "(tabs)" : "(auth)"}
-    
-    >
-      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-    </Stack>
+    <AppProvider>
+      <Stack initialRouteName={user ? "(tabs)" : "(auth)"}>
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      </Stack>
+    </AppProvider>
   );
 }
