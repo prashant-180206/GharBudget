@@ -8,7 +8,7 @@ import CustomHeader from "@/components/CustomHeader";
 export default function TabLayout() {
   return (
     <Tabs
-    initialRouteName="transactions"
+      initialRouteName="home"
       screenOptions={{
         tabBarStyle: {
           position: "absolute",
@@ -22,7 +22,6 @@ export default function TabLayout() {
         },
         tabBarShowLabel: false,
         headerShown: false,
-        
       }}
     >
       {/* Home */}
@@ -65,7 +64,6 @@ export default function TabLayout() {
       <Tabs.Screen
         name="transactions"
         options={{
-         
           title: "Transactions",
           tabBarIcon: ({ focused }) => (
             <View
@@ -120,9 +118,9 @@ export default function TabLayout() {
         name="Account_Details"
         options={{
           title: "Account Details",
-          headerShown:true,
+          headerShown: true,
           header: () => <CustomHeader title="Account Details" />,
-          href: null, 
+          href: null,
         }}
       />
     </Tabs>

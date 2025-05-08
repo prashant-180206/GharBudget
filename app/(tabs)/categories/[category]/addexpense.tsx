@@ -8,23 +8,30 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
   Alert,
 } from "react-native";
 import React, { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import DateInput from "@/components/DateInput";
 import DropdownInput from "@/components/dropdown";
 import { ExpenseCategories } from "@/assets/constants";
 import { Colors } from "@/assets/colors";
 import { auth, db } from "@/FirebaseConfig";
-import { addDoc, collection, doc, getDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  increment,
+  updateDoc,
+} from "firebase/firestore";
 
 const AddExpense = () => {
   const router = useRouter();
+  const { category } = useLocalSearchParams();
 
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(
+    category ? category.toString() : ""
+  );
   const [amount, setAmount] = useState("");
   const [expenseTitle, setExpenseTitle] = useState("");
   const [message, setMessage] = useState("");
@@ -32,7 +39,6 @@ const AddExpense = () => {
   const [error, setError] = useState("");
 
   const ConvertDate = (dateString: string) => {
-    setDate(dateString);
     const convertedDate = new Date(dateString);
     return convertedDate;
   };
@@ -57,26 +63,42 @@ const AddExpense = () => {
   const ExpenseSubmit = async () => {
     if (validateForm()) {
       try {
-        const userId = auth.currentUser?.uid;
+        const userId = auth.currentUser?.uid || "";
+        const now = new Date();
 
-        const docRef = await addDoc(collection(db, "expenses"), {
+        await addDoc(collection(db, "expenses"), {
           userId: userId,
           Title: expenseTitle,
-          Created_At: new Date(),
+          Created_At: now,
+          Month: now.getMonth(),
+          Year: now.getFullYear(),
           Category: selectedCategory,
           Amount: Number(amount),
           Date: ConvertDate(date),
           Message: message,
         });
-        router.push("/(tabs)/categories");
+
+        const userDocRef = doc(db, "users", userId);
+        await updateDoc(userDocRef, {
+          Expense_this_month: increment(Number(amount)),
+        });
+
+        router.push(
+          category
+            ? `/(tabs)/categories/${category.toString()}`
+            : "/(tabs)/categories"
+        );
       } catch (err) {
         if (err instanceof Error) {
           Alert.alert(err.message);
         } else {
           Alert.alert("An unexpected error occurred.");
         }
-
-        router.push("/(tabs)/categories");
+        router.push(
+          category
+            ? `/(tabs)/categories/${category.toString()}`
+            : "/(tabs)/categories"
+        );
       }
     }
   };
@@ -96,7 +118,7 @@ const AddExpense = () => {
           <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <View className="flex-1 bg-col_bg rounded-t-[80px] px-4 pb-32 justify-start pt-10 gap-8 items-center">
               <View className="w-5/6 flex justify-center items-center">
-                <DateInput onDateChange={(date) => setDate(date)} />
+                <DateInput onDateChange={setDate} />
               </View>
 
               {/* Category Input */}
@@ -107,8 +129,10 @@ const AddExpense = () => {
                 <DropdownInput
                   items={ExpenseCategories}
                   value={selectedCategory}
-                  onChange={(val) => setSelectedCategory(val)}
-                  placeholder="Select a Category"
+                  onChange={setSelectedCategory}
+                  placeholder={
+                    category ? category.toString() : "Select Category"
+                  }
                 />
               </View>
 
@@ -145,7 +169,7 @@ const AddExpense = () => {
                 placeholder="Enter Message (optional)"
                 placeholderTextColor={Colors.primary.DEFAULT}
                 multiline
-                numberOfLines={4} // Adjust this value based on how many lines you want to show by default
+                numberOfLines={4}
                 textAlignVertical="top"
                 value={message}
                 onChangeText={setMessage}

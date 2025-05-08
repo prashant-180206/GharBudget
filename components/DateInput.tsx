@@ -1,5 +1,9 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { View, Text, TextInput } from "react-native";
+
+// Helper to pad day and month with leading zero if needed
+const padToTwoDigits = (num: string | number): string =>
+  num.toString().padStart(2, "0");
 
 // Validates if the date is a valid calendar date
 const isValidDate = (day: string, month: string, year: string): boolean => {
@@ -29,11 +33,16 @@ const isValidDate = (day: string, month: string, year: string): boolean => {
   return true;
 };
 
-const DateInput = ({ onDateChange }: { onDateChange: (date: string) => void }) => {
+const DateInput = ({
+  onDateChange,
+}: {
+  onDateChange: (date: string) => void;
+}) => {
   const now = new Date();
 
-  const [day, setDay] = useState(`${now.getDate()}`);
-  const [month, setMonth] = useState(`${now.getMonth() + 1}`);
+  // Always use padded values for initial state
+  const [day, setDay] = useState(padToTwoDigits(now.getDate()));
+  const [month, setMonth] = useState(padToTwoDigits(now.getMonth() + 1));
   const [year, setYear] = useState(`${now.getFullYear()}`);
   const [error, setError] = useState("");
 
@@ -41,18 +50,25 @@ const DateInput = ({ onDateChange }: { onDateChange: (date: string) => void }) =
   const monthRef = useRef<TextInput>(null);
   const yearRef = useRef<TextInput>(null);
 
+  // Notify parent with initial date on mount
+  useEffect(() => {
+    onDateChange(`${year}-${month}-${day}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run on mount
+
   const handleDayChange = (text: string) => {
     setDay(text);
     if (text.length === 2) {
       monthRef.current?.focus();
     }
-
     if (text.length === 2 && month.length === 2 && year.length === 4) {
       if (!isValidDate(text, month, year)) {
         setError("Invalid date.");
       } else {
         setError("");
-        onDateChange(`${year}-${month}-${text}`); // Pass the date to the parent
+        onDateChange(
+          `${year}-${padToTwoDigits(month)}-${padToTwoDigits(text)}`
+        );
       }
     }
   };
@@ -62,26 +78,28 @@ const DateInput = ({ onDateChange }: { onDateChange: (date: string) => void }) =
     if (text.length === 2) {
       yearRef.current?.focus();
     }
-
     if (text.length === 2 && day.length === 2 && year.length === 4) {
       if (!isValidDate(day, text, year)) {
         setError("Invalid date.");
       } else {
         setError("");
-        onDateChange(`${year}-${text}-${day}`);
+        onDateChange(
+          `${year}-${padToTwoDigits(text)}-${padToTwoDigits(day)}`
+        );
       }
     }
   };
 
   const handleYearChange = (text: string) => {
     setYear(text);
-
     if (text.length === 4 && day.length === 2 && month.length === 2) {
       if (!isValidDate(day, month, text)) {
         setError("Invalid date.");
       } else {
         setError("");
-        onDateChange(`${text}-${month}-${day}`);
+        onDateChange(
+          `${text}-${padToTwoDigits(month)}-${padToTwoDigits(day)}`
+        );
       }
     }
   };

@@ -16,7 +16,7 @@ const Dashboard = ({
     return <ActivityIndicator size="large" />;
   }
 
-  const progress = (totalExpense / totalBalance) * 100;
+  const progress = 100 % ((totalExpense / totalBalance) * 100);
 
   return (
     <View className="w-5/6 flex-grow flex flex-col justify-center items-center">

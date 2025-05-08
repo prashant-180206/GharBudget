@@ -9,45 +9,32 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import CategoryGrid from "@/components/CategoryGrid";
+import Dashboard from "@/components/tabs/Dashboard";
 
 const Transactions = () => {
   const router = useRouter();
 
   return (
     <>
-      <StatusBar
-        barStyle="light-content"
-        translucent
-        backgroundColor="transparent"
-      />
-      <SafeAreaView className="flex-1 bg-primary">
+      <View className="flex-1 bg-primary">
         {/* Header */}
-        <View className="items-center justify-center py-6">
-          <Text className="text-3xl font-semibold text-Txt">Categories</Text>
+        <View className="items-center w-full h-[25%] justify-center py-6">
+          <Dashboard />
         </View>
 
         {/* Scrollable Content */}
-        <View className="flex-1 bg-col_bg rounded-t-[80px] pt-0 px-4 pb-32">
+        <View className="flex-1 w-full h-[80%] bg-col_bg rounded-t-[80px] pt-0 px-4 pb-32">
           <ScrollView
-            className="p-4 my-4"
+            className="p-4 my-4 "
             contentContainerStyle={{
               paddingBottom: 40,
             }}
             showsVerticalScrollIndicator={false}
           >
             <CategoryGrid />
-
-            <TouchableOpacity
-              onPress={() => router.push("/(tabs)/categories/addexpense")}
-              className="bg-primary p-3 rounded-full mt-8 mx-auto px-6"
-            >
-              <Text className="text-Txt text-base font-semibold text-center">
-                Add Expense
-              </Text>
-            </TouchableOpacity>
           </ScrollView>
         </View>
-      </SafeAreaView>
+      </View>
     </>
   );
 };

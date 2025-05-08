@@ -2,22 +2,19 @@ import { View, Text, StatusBar, TouchableOpacity } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
+import Dashboard from "@/components/tabs/Dashboard";
 
 const analysis = () => {
   const router = useRouter();
   return (
     <>
-      <StatusBar
-        barStyle="light-content"
-        translucent
-        backgroundColor="transparent"
-      />
-      <SafeAreaView className="h-full w-full bg-primary ">
-        <View className="w-full h-[30%] flex items-center justify-center">
-          <Text className="text-3xl font-semibold text-Txt">Analysis</Text>
+     
+      <View className="h-full w-full bg-primary ">
+        <View className="w-full h-[25%] flex items-center justify-center ">
+          <Dashboard />
         </View>
         <View
-          className="w-full h-[70%] bg-col_bg absolute bottom-0 rounded-t-[80px] flex flex-col justify-center items-center
+          className="w-full h-[75%] bg-col_bg absolute bottom-0 rounded-t-[80px] flex flex-col justify-center items-center
         "
         >
           <TouchableOpacity
@@ -25,21 +22,23 @@ const analysis = () => {
               router.push("/(tabs)/analysis/changebudget");
             }}
             className="bg-primary p-2 rounded-full text-Txt"
-
           >
-            <Text className="text-xl mx-4 font-semibold text-Txt">Modify Budget</Text>
+            <Text className="text-xl mx-4 font-semibold text-Txt">
+              Modify Budget
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
               router.push("/(tabs)/analysis/changebudget");
             }}
             className="bg-primary p-2 rounded-full text-Txt"
-
           >
-            <Text className="text-xl mx-4 font-semibold text-Txt">Modify Budget</Text>
+            <Text className="text-xl mx-4 font-semibold text-Txt">
+              Modify Budget
+            </Text>
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
+      </View>
     </>
   );
 };

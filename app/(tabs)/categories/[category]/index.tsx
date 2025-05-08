@@ -1,103 +1,43 @@
-import { View, Text, TouchableOpacity, Alert } from "react-native";
-import React, { useEffect, useState } from "react";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useIsFocused } from "@react-navigation/native";
-import { auth, db } from "@/FirebaseConfig";
 import {
-  collection,
-  doc,
-  DocumentData,
-  getDoc,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
+  View,
+  Text,
+  StatusBar,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import React from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import Dashboard from "@/components/tabs/Dashboard";
 
 const category = () => {
-  const { category } = useLocalSearchParams();
   const router = useRouter();
-
-  const [Data, setData] = useState<DocumentData>({});
-  const [TotalIncome, setTotalIncome] = useState(0);
-  const [TotalAmount, setTotalAmount] = useState(0);
-
-  const isfocused = useIsFocused();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const userId = auth.currentUser?.uid;
-
-        if (!userId) {
-          Alert.alert("Authentication Error", "User is not authenticated.");
-          return;
-        }
-
-        // Fetch user document
-        const userDocRef = doc(db, "users", userId);
-        const userDataDoc = await getDoc(userDocRef);
-
-        if (!userDataDoc.exists()) {
-          Alert.alert("Data Error", "User data not found.");
-          return;
-        }
-
-        // Fetch expenses
-        const expenseQuery = query(
-          collection(db, "expenses"),
-          where("userId", "==", userId)
-        );
-        const expenseSnapshot = await getDocs(expenseQuery);
-
-        // Fetch income
-        const incomeQuery = query(
-          collection(db, "income"),
-          where("userId", "==", userId)
-        );
-        const incomeSnapshot = await getDocs(incomeQuery);
-
-        // Set user data
-        const userData = userDataDoc.data();
-        setData(userData);
-
-        // Calculate expenses
-        let totalExpenses = 0;
-        expenseSnapshot.forEach((doc) => {
-          const amt = doc.data().Amount;
-          if (typeof amt === "number") totalExpenses += amt;
-        });
-        setTotalAmount(totalExpenses);
-
-        // Calculate income
-        let totalIncomeVal = 0;
-        incomeSnapshot.forEach((doc) => {
-          const amt = doc.data().Amount;
-          if (typeof amt === "number") totalIncomeVal += amt;
-        });
-        setTotalIncome(totalIncomeVal);
-      } catch (error: any) {
-        console.error("Error fetching data:", error);
-        Alert.alert(
-          "Error",
-          error.message || "Failed to fetch data. Please try again later."
-        );
-      }
-    };
-
-    fetchData();
-  }, [isfocused]);
+  const { category } = useLocalSearchParams();
 
   return (
-    <View>
-      <Text>category : {category}</Text>
-      <TouchableOpacity
-        onPress={() => {
-          router.push(`/(tabs)/categories/${category}/addexpense`);
-        }}
-      >
-        <Text>qwertyuiop</Text>
-      </TouchableOpacity>
-    </View>
+    <>
+      <View className="flex-1 bg-primary">
+        {/* Header */}
+        <View className="items-center w-full h-[25%] justify-center py-6">
+          <Dashboard />
+        </View>
+
+        {/* Scrollable Content */}
+        <View className="flex-1 w-full h-[80%] bg-col_bg rounded-t-[80px] pt-0 px-4 pb-32">
+          <TouchableOpacity
+            onPress={() =>
+              router.push(
+                `/(tabs)/categories/${category.toString()}/addexpense`
+              )
+            }
+            className="bg-primary p-3 rounded-full mt-8 mx-auto px-6"
+          >
+            <Text className="text-Txt text-base font-semibold text-center">
+              Add Expense
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </>
   );
 };
 

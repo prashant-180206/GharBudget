@@ -1,5 +1,13 @@
 import { auth, db } from "@/FirebaseConfig";
-import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
 import React, {
   createContext,
   useContext,
@@ -11,11 +19,37 @@ import { Alert } from "react-native";
 import { Timestamp } from "firebase/firestore";
 
 interface UserData {
-  Created_at: Timestamp;
+  Created_at: Timestamp; // Firestore Timestamp
+  Expense_this_month: number;
+  Income_this_month: number;
   email: string;
   fullName: string;
   mobile: string;
   password: string;
+}
+
+interface ExpenseData {
+  Amount: number; // Amount of the expense
+  Category: string; // Category of the expense (e.g., "Food")
+  Created_At: Timestamp; // Timestamp when the expense is created
+  Date: Timestamp; // Date of the expense
+  Message: string; // Message related to the expense
+  Month: number; // Month of the expense (e.g., 4 for April)
+  Title: string; // Title of the expense (e.g., "Vada pav")
+  Year: number; // Year of the expense (e.g., 2025)
+  userId: string; // User ID of the person associated with the expense
+}
+
+interface IncomeData {
+  Amount: number; // Amount of the income
+  Created_At: Timestamp; // Timestamp when the income is created
+  Date: Timestamp; // Date of the income
+  Label: string; // Label for the income (e.g., "Monthly")
+  Message: string; // Message related to the income
+  Month: number; // Month of the income (e.g., 4 for April)
+  Title: string; // Title of the income (e.g., "Side Income")
+  Year: number; // Year of the income (e.g., 2025)
+  userId: string; // User ID of the person associated with the income
 }
 
 // 1. Define the shape of the context data
@@ -24,6 +58,8 @@ interface AppData {
   totalExpense: number;
   userData: UserData | null;
   loading: boolean;
+  ExpenseData: ExpenseData[] | null;
+  IncomeData: IncomeData[] | null;
 }
 
 // 2. Default values
@@ -32,6 +68,8 @@ const defaultValue: AppData = {
   totalExpense: 0,
   userData: null,
   loading: true,
+  ExpenseData: null,
+  IncomeData: null,
 };
 
 // 3. Create context
@@ -48,6 +86,10 @@ export const AppProvider: React.FC<DashboardProviderProps> = ({ children }) => {
   const [totalExpense, setTotalExpense] = useState(0);
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [IncomeData, setUserIncomeData] = useState<IncomeData[] | null>(null);
+  const [ExpenseData, setUserExpenseData] = useState<ExpenseData[] | null>(
+    null
+  );
 
   useEffect(() => {
     const userId = auth.currentUser?.uid;
@@ -62,33 +104,34 @@ export const AppProvider: React.FC<DashboardProviderProps> = ({ children }) => {
 
     // Income Snapshot Listener
     const incomeUnsub = onSnapshot(
-      query(collection(db, "income"), where("userId", "==", userId)),
+      query(collection(db, "income"), where("userId", "==", userId), limit(15)),
       (snapshot) => {
-        let total = 0;
+        const incomeArr: IncomeData[] = [];
         snapshot.forEach((doc) => {
-          const amt = doc.data().Amount;
-          if (typeof amt === "number") total += amt;
+          incomeArr.push(doc.data() as IncomeData);
+          // console.log(doc.data());
         });
-        setTotalBalance(total);
+        setUserIncomeData(incomeArr);
+        // console.log(incomeArr);
       },
       (error) => {
         console.error("Error listening to income:", error);
       }
     );
 
-    // Expense Snapshot Listener
     const expenseUnsub = onSnapshot(
-      query(collection(db, "expenses"), where("userId", "==", userId)),
+      query(collection(db, "income"), where("userId", "==", userId), limit(15)),
       (snapshot) => {
-        let total = 0;
+        const expensearr: ExpenseData[] = [];
         snapshot.forEach((doc) => {
-          const amt = doc.data().Amount;
-          if (typeof amt === "number") total += amt;
+          expensearr.push(doc.data() as ExpenseData);
+          // console.log(doc.data());
         });
-        setTotalExpense(total);
+        setUserExpenseData(expensearr);
+        // console.log(expensearr);
       },
       (error) => {
-        console.error("Error listening to expenses:", error);
+        console.error("Error listening to income:", error);
       }
     );
 
@@ -98,6 +141,8 @@ export const AppProvider: React.FC<DashboardProviderProps> = ({ children }) => {
       (docSnap) => {
         if (docSnap.exists()) {
           setUserData(docSnap.data() as UserData);
+          setTotalBalance(docSnap.data().Income_this_month);
+          setTotalExpense(docSnap.data().Expense_this_month);
         } else {
           console.log("No such document!");
         }
@@ -123,7 +168,14 @@ export const AppProvider: React.FC<DashboardProviderProps> = ({ children }) => {
 
   return (
     <DashboardContext.Provider
-      value={{ totalBalance, totalExpense, userData, loading }}
+      value={{
+        totalBalance,
+        totalExpense,
+        userData,
+        loading,
+        ExpenseData,
+        IncomeData,
+      }}
     >
       {children}
     </DashboardContext.Provider>

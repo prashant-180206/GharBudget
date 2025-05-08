@@ -19,7 +19,14 @@ import DropdownInput from "@/components/dropdown";
 import { ExpenseCategories } from "@/assets/constants";
 import { Colors } from "@/assets/colors";
 import { auth, db } from "@/FirebaseConfig";
-import { addDoc, collection, doc, getDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  increment,
+  updateDoc,
+} from "firebase/firestore";
 
 const income = () => {
   const router = useRouter();
@@ -30,6 +37,7 @@ const income = () => {
   const [message, setMessage] = useState("");
   const [date, setDate] = useState(""); // Store the date as string initially
   const [error, setError] = useState("");
+  const [label, setlabel] = useState("Monthly");
 
   const ConvertDate = (dateString: string) => {
     setDate(dateString);
@@ -53,15 +61,23 @@ const income = () => {
   const IncomeSubmit = async () => {
     if (validateForm()) {
       try {
-        const userId = auth.currentUser?.uid;
+        const userId = auth.currentUser?.uid || "";
+        const now = new Date();
 
         const docRef = await addDoc(collection(db, "income"), {
           userId: userId,
           Title: expenseTitle,
-          Created_At: new Date(),
+          Created_At: now,
           Amount: Number(amount),
           Date: ConvertDate(date),
+          Month: now.getMonth(),
+          Year: now.getFullYear(),
           Message: message,
+          Label: label,
+        });
+        const userDocRef = doc(db, "users", userId);
+        await updateDoc(userDocRef, {
+          Income_this_month: increment(Number(amount)),
         });
         router.push("/(tabs)/transactions");
       } catch (err) {
@@ -113,6 +129,18 @@ const income = () => {
                   placeholder="Income Title (optional)"
                   value={expenseTitle}
                   onChangeText={setExpenseTitle}
+                />
+              </View>
+              {/* Expense Title Input */}
+              <View className="w-5/6">
+                <Text className="p-2 font-semibold text-Txt-secondary">
+                  Income Label
+                </Text>
+                <TextInput
+                  className="bg-col_bg-dark w-full rounded-full px-6 py-4"
+                  placeholder="Monthly"
+                  value={label}
+                  onChangeText={setlabel}
                 />
               </View>
 

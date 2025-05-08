@@ -7,25 +7,12 @@ import {
   Alert,
   Pressable,
 } from "react-native";
-import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors } from "@/assets/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { auth, db } from "@/FirebaseConfig";
-import {
-  collection,
-  doc,
-  DocumentData,
-  getDoc,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
-
-import { useIsFocused } from "@react-navigation/native";
 import Dashboard from "@/components/tabs/Dashboard";
 import { useAppData } from "@/context/AppContext";
+import CombinedList from "@/components/tabs/ExpenseView";
 
 // import Btn from "@/components/Btn";
 
@@ -74,7 +61,11 @@ const home = () => {
           </TouchableOpacity>
         </View>
 
-        <View className="w-full h-[70%] bg-col_bg absolute bottom-0 rounded-t-[80px] flex flex-col items-center justify-start gap-0  "></View>
+        <View className="w-full h-[70%] bg-col_bg absolute bottom-0 rounded-t-[80px] flex flex-col items-center justify-start gap-0  ">
+          <View className="h-3/6 w-4/6">
+            <CombinedList />
+          </View>
+        </View>
       </SafeAreaView>
     </>
   );

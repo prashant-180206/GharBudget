@@ -26,7 +26,7 @@ const index = () => {
   const [SeeMsg, SetSeeMsg] = useState(false);
 
   const login = async () => {
-    console.log("Trying to login with:", Email.trim(), Password.trim());
+    // console.log("Trying to login with:", Email.trim(), Password.trim());
 
     await signInWithEmailAndPassword(auth, Email.trim(), Password.trim())
       .then((userCredential) => {

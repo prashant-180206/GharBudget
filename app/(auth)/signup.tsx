@@ -100,6 +100,8 @@ const Signup = () => {
         email,
         password,
         Created_at: new Date(),
+        Expense_this_month: 0,
+        Income_this_month: 0,
       });
 
       router.push("/(auth)/login");
