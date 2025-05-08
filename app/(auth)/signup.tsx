@@ -103,8 +103,12 @@ const Signup = () => {
       });
 
       router.push("/(auth)/login");
-    } catch {
-      Alert.alert("Error Signing In");
+    } catch (err) {
+      if (err instanceof Error) {
+        Alert.alert(err.message);
+      } else {
+        Alert.alert("An unexpected error occurred.");
+      }
       router.push("/(auth)/login");
     }
   };

@@ -4,57 +4,48 @@ import {
   StatusBar,
   TouchableOpacity,
   TextInput,
-  FlatList,
   ScrollView,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import DropdownInput from "@/components/dropdown";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { auth, db } from "@/FirebaseConfig";
 import { ExpenseCategories } from "@/assets/constants";
 
-type BudgetItem = {
-  name: string;
-  amount: string;
-};
+type Amounts = { [key: string]: string };
 
-const changebudget = () => {
-  const router = useRouter();
-  const [selected, setSelected] = useState("");
-  const [totalBudget, setTotalBudget] = useState(0);
+const ChangeBudget = () => {
+  const [amounts, setAmounts] = useState<Amounts>(() =>
+    ExpenseCategories.reduce((acc, category) => {
+      acc[category.value] = "";
+      return acc;
+    }, {} as Amounts)
+  );
 
-  const [decided, setDecided] = useState<BudgetItem[]>([]);
-  const [amount, setAmount] = useState("");
-
-  const addAmount = () => {
-    if (!selected || !amount) return;
-
-    setDecided((prev) => [...prev, { name: selected.toUpperCase(), amount }]);
-    setAmount(""); // reset after adding
+  const handleChange = (value: string, key: string) => {
+    setAmounts((prev) => ({ ...prev, [key]: value }));
   };
 
-  const updateBudget = async () => {
+  const router = useRouter();
+
+  const handleSubmit = async () => {
     try {
       const userId = auth.currentUser?.uid;
-
       const now = new Date();
       const year = now.getFullYear();
-      const month = now.getMonth() + 1; // January is 0
+      const month = now.getMonth() + 1;
       const docId = `${userId}_${year}_${month}`;
 
       const budgetRef = doc(db, "budget", docId);
-      const existingDoc = await getDoc(budgetRef);
 
       await setDoc(budgetRef, {
-        Budget: decided,
-        Total_Budget: totalBudget,
-        User_Id: userId,
-        Year: year,
-        Month: month,
-        Created_At: existingDoc.exists() ? existingDoc.data().Created_At : now,
+        ...amounts,
+        user_Id: userId,
+        Created_At: now,
         Updated_At: now,
       });
 
@@ -72,95 +63,55 @@ const changebudget = () => {
         translucent
         backgroundColor="transparent"
       />
-      <SafeAreaView className="h-full w-full bg-primary ">
+      <SafeAreaView className="h-full w-full bg-primary">
         <View className="w-full h-[15%] flex items-center justify-center">
           <Text className="text-3xl font-semibold text-Txt">
             Create / Update Budget
           </Text>
         </View>
-        <View
-          className="w-full h-[85%] bg-col_bg absolute bottom-0 rounded-t-[80px] flex flex-col justify-start items-center
-        "
-        >
-          <View className="w-5/6 p-4 mt-10">
-            <Text className="text-sm">Add total money</Text>
-            <TextInput
-              className="bg-col_bg-dark p-4 rounded-full text-Txt "
-              placeholder="Write Total Money to add "
-              keyboardType="numeric"
-              value={`${totalBudget}`}
-              onChangeText={(num) => {
-                setTotalBudget(Number(num));
-              }}
-            />
-          </View>
-          <View className="w-5/6 p-4">
-            <Text className="text-sm">Add total money</Text>
-            <View className="flex flex-row items-center justify-center">
-              <View className="w-4/6">
-                <DropdownInput
-                  items={ExpenseCategories}
-                  value={selected}
-                  onChange={(val) => setSelected(val)}
-                  placeholder="Choose a category"
-                />
-              </View>
-              <TextInput
-                className="bg-col_bg-dark h-12 rounded-full p-4 w-2/6"
-                placeholder="Amount"
-                keyboardType="numeric"
-                value={amount}
-                onChangeText={setAmount}
-              />
-            </View>
-
-            <TouchableOpacity
-              onPress={() => {
-                addAmount();
-              }}
-              className="bg-primary p-2 rounded-full text-center"
+        <View className="w-full h-[85%] bg-col_bg absolute bottom-0 rounded-t-[80px] flex flex-col justify-start items-center p-4 pt-20 pb-32">
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={{ flex: 1, width: "100%" }}
+            keyboardVerticalOffset={80} // Adjust if you have a taller header
+          >
+            <ScrollView
+              className="bg-col_bg pb-20 w-full h-full px-4"
+              keyboardShouldPersistTaps="handled"
             >
-              <Text className=" mx-4 font-semibold text-Txt text-center">
-                Add Amount
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          <FlatList
-            data={decided}
-            className="gap-4 w-5/6 border-2 mb-4 rounded-xl border-primary"
-            keyExtractor={(item, index) => `${item.name}-${index}`}
-            renderItem={({ item }) => (
-              <View className="px-4 py-3 bg-col_bg-dark rounded-full mb-2 w-full">
-                <Text className="text-base text-Txt">
-                  {item.name}: ₹{item.amount}
-                </Text>
+              <View className="flex flex-col items-center justify-evenly">
+                {ExpenseCategories.map((category) => (
+                  <View key={category.value} className="mb-4 flex flex-row ">
+                    <Text className="text-xl font-medium text-Txt mb-1 w-3/6">
+                      {category.label}
+                    </Text>
+                    <TextInput
+                      className="bg-col_bg-dark rounded-full px-6 py-2"
+                      placeholder="Enter amount"
+                      keyboardType="numeric"
+                      value={amounts[category.value]}
+                      onChangeText={(text) =>
+                        handleChange(text, category.value)
+                      }
+                      returnKeyType="done"
+                    />
+                  </View>
+                ))}
               </View>
-            )}
-            nestedScrollEnabled
-            style={{ flexGrow: 0, maxHeight: 200 }} // Set the max height here
-          />
-
-          <TouchableOpacity
-            onPress={updateBudget}
-            className="bg-primary p-2 rounded-full m-4 w-5/6 text-center"
-          >
-            <Text className="text-xl mx-4 font-semibold text-Txt text-center">
-              Make Changes in Budget
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              router.push("/(tabs)/analysis");
-            }}
-            className="bg-primary p-2 rounded-full "
-          >
-            <Text className="text-xl mx-4 font-semibold text-Txt">Go back</Text>
-          </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleSubmit}
+                className="bg-primary rounded-full py-3 mt-4"
+              >
+                <Text className="text-center text-Txt-light font-bold text-xl">
+                  Submit
+                </Text>
+              </TouchableOpacity>
+            </ScrollView>
+          </KeyboardAvoidingView>
         </View>
       </SafeAreaView>
     </>
   );
 };
 
-export default changebudget;
+export default ChangeBudget;

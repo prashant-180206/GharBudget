@@ -4,6 +4,7 @@ import {
   TextInput,
   TouchableOpacity,
   StatusBar,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -25,12 +26,16 @@ const index = () => {
   const [SeeMsg, SetSeeMsg] = useState(false);
 
   const login = async () => {
-    await signInWithEmailAndPassword(auth, Email, Password)
-      .then((userCredentials) => {
+    console.log("Trying to login with:", Email.trim(), Password.trim());
+
+    await signInWithEmailAndPassword(auth, Email.trim(), Password.trim())
+      .then((userCredential) => {
+        console.log("Login successful", userCredential.user.email);
         router.push("/(tabs)/home");
       })
       .catch((err) => {
-        SetSeeMsg(true);
+        console.error("Login error:", err.code, err.message);
+        Alert.alert("Login Error", err.message);
       });
   };
 
@@ -101,7 +106,7 @@ const index = () => {
           >
             <Text className="text-center text-xl font-semibold">Log In</Text>
           </TouchableOpacity>
-          
+
           <TouchableOpacity
             className="bg-col_bg-dark rounded-full p-2 my-2 w-3/6"
             onPress={() => {

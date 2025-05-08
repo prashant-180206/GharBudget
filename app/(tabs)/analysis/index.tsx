@@ -29,6 +29,15 @@ const analysis = () => {
           >
             <Text className="text-xl mx-4 font-semibold text-Txt">Modify Budget</Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              router.push("/(tabs)/analysis/changebudget");
+            }}
+            className="bg-primary p-2 rounded-full text-Txt"
+
+          >
+            <Text className="text-xl mx-4 font-semibold text-Txt">Modify Budget</Text>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     </>

@@ -39,45 +39,69 @@ import Dashboard from "@/components/tabs/Dashboard";
 const home = () => {
   const router = useRouter();
   const [Data, setData] = useState<DocumentData>({});
-  const [BudgetData, setBudgetData] = useState<DocumentData>({});
+  const [TotalIncome, setTotalIncome] = useState(0);
   const [TotalAmount, setTotalAmount] = useState(0);
 
   const isfocused = useIsFocused();
 
   useEffect(() => {
     const fetchData = async () => {
-      const userId = auth.currentUser?.uid;
+      try {
+        const userId = auth.currentUser?.uid;
 
-      if (!userId) {
-        Alert.alert("User is not Authenticated");
-        return;
-      }
+        if (!userId) {
+          Alert.alert("Authentication Error", "User is not authenticated.");
+          return;
+        }
 
-      const userDataDoc = await getDoc(doc(db, "users", userId));
-      const BudgetDataDoc = await getDocs(
-        query(
-          collection(db, "budget"),
-          where("User_Id", "==", userId)
-          // limit(1)
-        )
-      );
-      const ExpenseDataDoc = await getDocs(
-        query(collection(db, "expenses"), where("userId", "==", userId))
-      );
+        // Fetch user document
+        const userDocRef = doc(db, "users", userId);
+        const userDataDoc = await getDoc(userDocRef);
 
-      if (userDataDoc.exists()) {
+        if (!userDataDoc.exists()) {
+          Alert.alert("Data Error", "User data not found.");
+          return;
+        }
+
+        // Fetch expenses
+        const expenseQuery = query(
+          collection(db, "expenses"),
+          where("userId", "==", userId)
+        );
+        const expenseSnapshot = await getDocs(expenseQuery);
+
+        // Fetch income
+        const incomeQuery = query(
+          collection(db, "income"),
+          where("userId", "==", userId)
+        );
+        const incomeSnapshot = await getDocs(incomeQuery);
+
+        // Set user data
         const userData = userDataDoc.data();
         setData(userData);
-        BudgetDataDoc.forEach((document) => {
-          setBudgetData(document.data());
+
+        // Calculate expenses
+        let totalExpenses = 0;
+        expenseSnapshot.forEach((doc) => {
+          const amt = doc.data().Amount;
+          if (typeof amt === "number") totalExpenses += amt;
         });
-        let total = 0;
-        ExpenseDataDoc.forEach((doc) => {
-          total += doc.data().Amount;
+        setTotalAmount(totalExpenses);
+
+        // Calculate income
+        let totalIncomeVal = 0;
+        incomeSnapshot.forEach((doc) => {
+          const amt = doc.data().Amount;
+          if (typeof amt === "number") totalIncomeVal += amt;
         });
-        setTotalAmount(total);
-      } else {
-        Alert.alert("Error Getting Data");
+        setTotalIncome(totalIncomeVal);
+      } catch (error: any) {
+        console.error("Error fetching data:", error);
+        Alert.alert(
+          "Error",
+          error.message || "Failed to fetch data. Please try again later."
+        );
       }
     };
 
@@ -113,19 +137,22 @@ const home = () => {
               </View>
             </Pressable>
           </View>
-          <Dashboard
-            totalBalance={BudgetData.Total_Budget ?? "--"}
-            totalExpense={TotalAmount ?? "--"}
-            progress={
-              BudgetData.Total_Budget
-                ? (TotalAmount / BudgetData.Total_Budget) * 100
-                : 0
-            }
-            progressText="30% of your Expense, Looks Good"
-            loadingBarBg={Colors.Txt.DEFAULT}
-            loadingBarFill="white"
-          />
+
+          <TouchableOpacity
+            className="w-full flex-grow flex flex-col justify-center items-center "
+            onPress={() => {
+              router.push("/(tabs)/Account_Details");
+            }}
+          >
+            <Dashboard
+              totalBalance={TotalIncome ?? "--"}
+              totalExpense={TotalAmount ?? "--"}
+              loadingBarBg={Colors.Txt.DEFAULT}
+              loadingBarFill="white"
+            />
+          </TouchableOpacity>
         </View>
+
         <View className="w-full h-[70%] bg-col_bg absolute bottom-0 rounded-t-[80px] flex flex-col items-center justify-start gap-0  "></View>
       </SafeAreaView>
     </>

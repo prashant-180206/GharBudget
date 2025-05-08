@@ -39,7 +39,7 @@ const DropdownInput: React.FC<DropdownInputProps> = ({
             keyExtractor={(item) => item.value}
             renderItem={({ item }) => (
               <TouchableOpacity
-                className="px-4  bg-col_bg-dark rounded-full mb-2"
+                className="px-4 h-12 flex items-start justify-center bg-col_bg-dark rounded-full mb-2"
                 onPress={() => {
                   onChange(item.value);
                   setOpen(false);

@@ -1,15 +1,13 @@
 import React from "react";
 import { View, Text } from "react-native";
 import LoadingBar from "../loadingBar";
- // Adjust the import path as needed
+import { Ionicons } from "@expo/vector-icons";
 
 interface DashboardProps {
-  totalBalance: number | string;
-  totalExpense: number | string;
-  progress: number; // 0-100
+  totalBalance: number;
+  totalExpense: number;
   balanceLabel?: string;
   expenseLabel?: string;
-  progressText?: string;
   loadingBarBg?: string;
   loadingBarFill?: string;
 }
@@ -17,33 +15,52 @@ interface DashboardProps {
 const Dashboard: React.FC<DashboardProps> = ({
   totalBalance,
   totalExpense,
-  progress,
   balanceLabel = "Total Balance",
   expenseLabel = "Total Expense",
-  progressText = "",
-  loadingBarBg = "#e5e7eb", // Default: Tailwind gray-200
+  loadingBarBg = "#e5e7eb",
   loadingBarFill = "#fff",
 }) => (
-  <View className="w-full flex-grow flex flex-col justify-center items-center p-4">
+  <View className="w-5/6 flex-grow flex flex-col justify-center items-center p">
     <View className="w-full flex flex-row items-center justify-between p-4">
       {/* Balance Card */}
       <View className="w-3/6 border-r-2 border-col_bg pr-4 items-start">
-        <Text className="text-xs text-gray-500">{balanceLabel}</Text>
-        <Text className="text-xl font-bold">{totalBalance}</Text>
+        <View className="flex flex-row gap-2 items-center justify-start">
+          <Ionicons name="cash-outline" size={15} />
+          <Text className="font-semibold text-Txt-secondary">
+            {balanceLabel}
+          </Text>
+        </View>
+        <Text className="text-3xl mt-1 text-Txt-light font-bold">
+          ₹{totalBalance.toLocaleString()}.00
+        </Text>
       </View>
       {/* Expense Card */}
       <View className="w-3/6 pl-4 items-end">
-        <Text className="text-xs text-gray-500">{expenseLabel}</Text>
-        <Text className="text-xl font-bold">{totalExpense}</Text>
+        <View className="flex flex-row gap-2 items-center justify-start">
+          <Ionicons name="card-outline" size={15} />
+          <Text className="font-semibold text-Txt-secondary">
+            {expenseLabel}
+          </Text>
+        </View>
+        <Text className="text-3xl mt-1 text-button-dark font-bold">
+          - ₹{totalExpense.toLocaleString()}.00
+        </Text>
       </View>
     </View>
     <LoadingBar
-      progress={progress}
+      progress={(totalExpense / totalBalance) * 100}
       backgroundColor={loadingBarBg}
       fillColor={loadingBarFill}
-      startText=""
+      startText={`${((totalExpense / totalBalance) * 100).toFixed(1)} %`}
     />
-    {progressText ? <Text>{progressText}</Text> : null}
+    {/* Example progress text */}
+    <View className="flex flex-row items-center justify-start w-full px-4 mt-2">
+      <Ionicons name="checkmark-circle-sharp" size={15} className="mr-2" />
+      <Text className="font-semibold text-Txt-secondary">
+        {`${((totalExpense / totalBalance) * 100).toFixed(1)} %`} of Your
+        Expenses , Looks Good
+      </Text>
+    </View>
   </View>
 );
 

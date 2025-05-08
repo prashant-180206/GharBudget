@@ -28,7 +28,7 @@ const LoadingBar: React.FC<LoadingBarProps> = ({
 
   return (
     <View
-      className="w-full rounded-full overflow-hidden relative"
+      className="w-full rounded-full overflow-hidden relative "
       style={[{ height, backgroundColor }, style]}
       {...props}
     >
@@ -42,15 +42,12 @@ const LoadingBar: React.FC<LoadingBarProps> = ({
       />
       {/* Text Overlay */}
       <View
-        className="flex-row items-center absolute left-0 top-0 w-full h-full px-4"
+        className="flex-row items-center absolute left-0 top-0 w-full h-full px-6"
         pointerEvents="none"
       >
         <View className="flex-1">
           {startText ? (
-            <Text
-              style={{ color: textColor }}
-              className="text-xl font-semibold"
-            >
+            <Text style={{ color: textColor }} className=" font-semibold">
               {startText}
             </Text>
           ) : null}
@@ -59,7 +56,7 @@ const LoadingBar: React.FC<LoadingBarProps> = ({
           {centerText ? (
             <Text
               style={{ color: textColor, textAlign: "center" }}
-              className="text-xl font-semibold"
+              className="font-semibold"
             >
               {centerText}
             </Text>
@@ -69,7 +66,7 @@ const LoadingBar: React.FC<LoadingBarProps> = ({
           {endText ? (
             <Text
               style={{ color: textColor, textAlign: "right" }}
-              className="text-xl font-semibold"
+              className="font-semibold"
             >
               {endText}
             </Text>

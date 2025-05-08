@@ -9,13 +9,7 @@ import {
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
-import { Colors } from "@/assets/colors";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-import { auth } from "@/FirebaseConfig";
+
 
 const index = () => {
   const router = useRouter();
