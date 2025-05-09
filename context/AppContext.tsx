@@ -120,7 +120,7 @@ export const AppProvider: React.FC<DashboardProviderProps> = ({ children }) => {
     );
 
     const expenseUnsub = onSnapshot(
-      query(collection(db, "income"), where("userId", "==", userId), limit(15)),
+      query(collection(db, "expenses"), where("userId", "==", userId), limit(15)),
       (snapshot) => {
         const expensearr: ExpenseData[] = [];
         snapshot.forEach((doc) => {

@@ -11,7 +11,7 @@ export default function RootLayout() {
         name="index"
         options={{
           headerShown: true,
-          header: () => <CustomHeader title={`${category.toString()}`} />,
+          header: () => <CustomHeader title={`${category}`} />,
         }}
       />
       <Stack.Screen

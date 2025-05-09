@@ -11,9 +11,16 @@ export default function RootLayout() {
           header: () => <CustomHeader title="Categories" />,
         }}
       />
-      
+
       <Stack.Screen name="[category]" options={{ headerShown: false }} />
-      <Stack.Screen name="Savings" options={{ headerShown: false }} />
+      
+      <Stack.Screen
+        name="Savings"
+        options={{
+          headerShown: true,
+          header: () => <CustomHeader title="Savings" />,
+        }}
+      />
     </Stack>
   );
 }

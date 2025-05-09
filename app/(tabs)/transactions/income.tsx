@@ -1,176 +1,90 @@
-import {
-  View,
-  Text,
-  StatusBar,
-  TouchableWithoutFeedback,
-  Keyboard,
-  TextInput,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Alert,
-} from "react-native";
-import React, { useState } from "react";
+import { View, Text, StatusBar, TouchableOpacity } from "react-native";
+import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
-import DateInput from "@/components/DateInput";
-import DropdownInput from "@/components/dropdown";
-import { ExpenseCategories } from "@/assets/constants";
+import Chart from "@/components/chart";
+import CircularLoader from "@/components/circularLoader";
+import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/assets/colors";
-import { auth, db } from "@/FirebaseConfig";
-import {
-  addDoc,
-  collection,
-  doc,
-  getDoc,
-  increment,
-  updateDoc,
-} from "firebase/firestore";
+import { router } from "expo-router";
+import { useAppData } from "@/context/AppContext";
 
 const income = () => {
-  const router = useRouter();
-
-  // const [selectedCategory, setSelectedCategory] = useState("");
-  const [amount, setAmount] = useState("");
-  const [expenseTitle, setExpenseTitle] = useState("");
-  const [message, setMessage] = useState("");
-  const [date, setDate] = useState(""); // Store the date as string initially
-  const [error, setError] = useState("");
-  const [label, setlabel] = useState("Monthly");
-
-  const ConvertDate = (dateString: string) => {
-    setDate(dateString);
-    const convertedDate = new Date(dateString);
-    return convertedDate;
-  };
-
-  const validateForm = () => {
-    if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
-      setError("Please enter a valid amount.");
-      return false;
-    }
-    if (!date) {
-      setError("Please select a date.");
-      return false;
-    }
-    setError(""); // Clear error if validation passes
-    return true;
-  };
-
-  const IncomeSubmit = async () => {
-    if (validateForm()) {
-      try {
-        const userId = auth.currentUser?.uid || "";
-        const now = new Date();
-
-        const docRef = await addDoc(collection(db, "income"), {
-          userId: userId,
-          Title: expenseTitle,
-          Created_At: now,
-          Amount: Number(amount),
-          Date: ConvertDate(date),
-          Month: now.getMonth(),
-          Year: now.getFullYear(),
-          Message: message,
-          Label: label,
-        });
-        const userDocRef = doc(db, "users", userId);
-        await updateDoc(userDocRef, {
-          Income_this_month: increment(Number(amount)),
-        });
-        router.push("/(tabs)/transactions");
-      } catch (err) {
-        if (err instanceof Error) {
-          Alert.alert(err.message);
-        } else {
-          Alert.alert("An unexpected error occurred.");
-        }
-
-        router.push("/(tabs)/transactions");
-      }
-    }
-  };
+  const { userData } = useAppData();
 
   return (
     <>
-      <View className="flex-1 bg-primary pt-10">
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={{ flex: 1 }}
-        >
-          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-            <View className="flex-1 bg-col_bg rounded-t-[80px] px-4 pb-32 justify-start pt-10 gap-8 items-center">
-              <View className="w-5/6 flex justify-center items-center">
-                <DateInput onDateChange={(date) => setDate(date)} />
-              </View>
-
-              {/* Amount Input */}
-              <View className="w-5/6">
-                <Text className="p-2 font-semibold text-Txt-secondary">
-                  Enter Amount
-                </Text>
-                <TextInput
-                  className="bg-col_bg-dark w-full rounded-full px-6 py-4"
-                  placeholder="Enter Amount"
-                  keyboardType="numeric"
-                  value={amount}
-                  onChangeText={setAmount}
-                />
-              </View>
-
-              {/* Expense Title Input */}
-              <View className="w-5/6">
-                <Text className="p-2 font-semibold text-Txt-secondary">
-                  IncomeTitle
-                </Text>
-                <TextInput
-                  className="bg-col_bg-dark w-full rounded-full px-6 py-4"
-                  placeholder="Income Title (optional)"
-                  value={expenseTitle}
-                  onChangeText={setExpenseTitle}
-                />
-              </View>
-              {/* Expense Title Input */}
-              <View className="w-5/6">
-                <Text className="p-2 font-semibold text-Txt-secondary">
-                  Income Label
-                </Text>
-                <TextInput
-                  className="bg-col_bg-dark w-full rounded-full px-6 py-4"
-                  placeholder="Monthly"
-                  value={label}
-                  onChangeText={setlabel}
-                />
-              </View>
-
-              {/* Message Input */}
-              <TextInput
-                className="bg-col_bg-dark w-5/6 h-32 rounded-xl px-6 py-4 text-primary"
-                placeholder="Enter Message (optional)"
-                placeholderTextColor={Colors.primary.DEFAULT}
-                multiline
-                numberOfLines={4} // Adjust this value based on how many lines you want to show by default
-                textAlignVertical="top"
-                value={message}
-                onChangeText={setMessage}
-              />
-
-              {/* Error Message */}
-              {error ? <Text className="text-red-500">{error}</Text> : null}
-
-              {/* Save Button */}
-              <TouchableOpacity
-                onPress={IncomeSubmit}
-                className="bg-primary p-2 rounded-full text-Txt w-3/6 text-center"
-              >
-                <Text className="text-xl mx-4 font-semibold text-Txt text-center">
-                  Add Income
-                </Text>
-              </TouchableOpacity>
+      <View className="h-full w-full bg-primary  ">
+        <View className="w-full h-[30%] ">
+          <View className="h-full w-full flex p-4 gap-4 px-10 justify-center ">
+            <View className="bg-col_bg h-2/6 rounded-xl flex flex-col items-center justify-center">
+              <Text className="font-semibold text-Txt-secondary">
+                Total balance
+              </Text>
+              <Text className="text-2xl font-bold">
+                {userData?.Income_this_month
+                  ? userData?.Income_this_month - userData?.Expense_this_month
+                  : "qwertyuiop"}
+              </Text>
             </View>
-          </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+            <View className=" h-3/6 gap-4 flex flex-row justify-between">
+              <View className="bg-button-dark rounded-xl flex-grow h-full flex flex-col items-center justify-center">
+                <Ionicons
+                  name="cash-outline"
+                  size={30}
+                  color={Colors.col_bg.light}
+                />
+                <Text className="font-semibold text-Txt-light">Income</Text>
+                <Text className="text-2xl font-bold text-Txt-light">
+                  {userData?.Income_this_month}
+                </Text>
+              </View>
+              <View className="bg-col_bg rounded-xl flex-grow h-full flex flex-col items-center justify-center">
+                <Ionicons
+                  name="card-outline"
+                  size={30}
+                  color={Colors.button.dark}
+                />
+                <Text className="font-semibold text-Txt-secondary w-full text-center">
+                  Expense
+                </Text>
+                <Text className="text-2xl font-bold text-button-dark">
+                  {userData?.Expense_this_month}
+                </Text>
+              </View>
+            </View>
+            {/* <View className="bg-white h-2/6"></View> */}
+          </View>
+        </View>
+        <View
+          className="w-full h-[70%] bg-col_bg absolute bottom-0 rounded-t-[80px] 
+        "
+        >
+          <TouchableOpacity
+            onPress={() => {
+              router.push("/(tabs)/transactions/addincome");
+            }}
+          >
+            <Text>Go to add Income</Text>
+          </TouchableOpacity>
+          <View className="w-2/6 ">
+            <CircularLoader progress={45} />
+          </View>
+          <Text>ertyuio</Text>
+          <View className="flex items-center justify-center p-4  w-full">
+            <Chart
+              data={[
+                { column: "Mon", income: 700, expense: 400 },
+                { column: "Tue", income: 500, expense: 300 },
+                { column: "Wed", income: 600, expense: 500 },
+                { column: "Thu", income: 100, expense: 200 },
+                { column: "Fri", income: 900, expense: 800 },
+                { column: "Sat", income: 200, expense: 100 },
+                { column: "Sun", income: 600, expense: 200 },
+              ]}
+              maxHeight={120}
+            />
+          </View>
+        </View>
       </View>
     </>
   );
