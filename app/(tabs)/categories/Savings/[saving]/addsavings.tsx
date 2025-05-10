@@ -14,7 +14,7 @@ import React, { useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import DateInput from "@/components/DateInput";
 import DropdownInput from "@/components/dropdown";
-import { ExpenseCategories } from "@/assets/constants";
+import { ExpenseCategories, savingsCategoryOptions } from "@/assets/constants";
 import { Colors } from "@/assets/colors";
 import { auth, db } from "@/FirebaseConfig";
 import {
@@ -26,15 +26,15 @@ import {
   updateDoc,
 } from "firebase/firestore";
 
-const AddExpense = () => {
+const AddSavings = () => {
   const router = useRouter();
-  const { category } = useLocalSearchParams();
+  const { saving } = useLocalSearchParams();
 
   const [selectedCategory, setSelectedCategory] = useState(
-    category ? category.toString() : ""
+    saving ? saving.toString() : ""
   );
   const [amount, setAmount] = useState("");
-  const [expenseTitle, setExpenseTitle] = useState("");
+  const [savingTitle, setSavingTitle] = useState("");
   const [message, setMessage] = useState("");
   const [date, setDate] = useState(""); // Store the date as string initially
   const [error, setError] = useState("");
@@ -46,7 +46,7 @@ const AddExpense = () => {
 
   const validateForm = () => {
     if (!selectedCategory) {
-      setError("Please select a category.");
+      setError("Please select a saving.");
       return false;
     }
     if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
@@ -67,7 +67,7 @@ const AddExpense = () => {
         const userId = auth.currentUser?.uid || "";
         const now = new Date();
         const docId = `${userId}${now.getMonth()}${now.getFullYear()}`;
-        const budgetRef = doc(db, "monthly_expense", docId);
+        const budgetRef = doc(db, "saving_expense", docId);
 
         await setDoc(
           budgetRef,
@@ -79,15 +79,27 @@ const AddExpense = () => {
 
         await addDoc(collection(db, "expenses"), {
           userId: userId,
-          Title: expenseTitle,
+          Title: savingTitle,
           Created_At: now,
           Month: now.getMonth(),
           Year: now.getFullYear(),
-          Category: selectedCategory,
+          Category: 'Savings',
           Amount: Number(amount),
           Date: ConvertDate(date),
           Message: message,
         });
+
+        await addDoc(collection(db, "savings"), {
+            userId: userId,
+            Title: savingTitle,
+            Created_At: now,
+            Month: now.getMonth(),
+            Year: now.getFullYear(),
+            Category: selectedCategory,
+            Amount: Number(amount),
+            Date: ConvertDate(date),
+            Message: message,
+          });
 
         const userDocRef = doc(db, "users", userId);
         await updateDoc(userDocRef, {
@@ -95,8 +107,8 @@ const AddExpense = () => {
         });
 
         router.push(
-          category
-            ? `/(tabs)/categories/${category.toString()}`
+          saving
+            ? `/(tabs)/categories/${saving.toString()}`
             : "/(tabs)/categories"
         );
       } catch (err) {
@@ -106,8 +118,8 @@ const AddExpense = () => {
           Alert.alert("An unexpected error occurred.");
         }
         router.push(
-          category
-            ? `/(tabs)/categories/${category.toString()}`
+          saving
+            ? `/(tabs)/categories/${saving.toString()}`
             : "/(tabs)/categories"
         );
       }
@@ -138,12 +150,10 @@ const AddExpense = () => {
                   Category
                 </Text>
                 <DropdownInput
-                  items={ExpenseCategories}
+                  items={savingsCategoryOptions}
                   value={selectedCategory}
                   onChange={setSelectedCategory}
-                  placeholder={
-                    category ? category.toString() : "Select Category"
-                  }
+                  placeholder={saving ? saving.toString() : "Select Category"}
                 />
               </View>
 
@@ -161,16 +171,16 @@ const AddExpense = () => {
                 />
               </View>
 
-              {/* Expense Title Input */}
+              {/* Saving Title Input */}
               <View className="w-5/6">
                 <Text className="p-2 font-semibold text-Txt-secondary">
-                  Expense Title
+                  Saving Title
                 </Text>
                 <TextInput
                   className="bg-col_bg-dark w-full rounded-full px-6 py-4"
-                  placeholder="Expense Title (optional)"
-                  value={expenseTitle}
-                  onChangeText={setExpenseTitle}
+                  placeholder="Saving Title (optional)"
+                  value={savingTitle}
+                  onChangeText={setSavingTitle}
                 />
               </View>
 
@@ -206,4 +216,4 @@ const AddExpense = () => {
   );
 };
 
-export default AddExpense;
+export default AddSavings;

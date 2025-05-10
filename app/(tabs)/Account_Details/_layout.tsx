@@ -8,21 +8,21 @@ export default function RootLayout() {
         name="index"
         options={{
           headerShown: true,
-          header: () => <CustomHeader title="Transactions" />,
+          header: () => <CustomHeader title="Account Details" />,
         }}
       />
       <Stack.Screen
-        name="expense"
+        name="changebudget"
         options={{
           headerShown: true,
-          header: () => <CustomHeader title="See Expenses" />,
+          header: () => <CustomHeader title="Change Budget" />,
         }}
       />
       <Stack.Screen
-        name="income"
+        name="addincome"
         options={{
           headerShown: true,
-          header: () => <CustomHeader title="Income" />,
+          header: () => <CustomHeader title="Add Income" />,
         }}
       />
     </Stack>

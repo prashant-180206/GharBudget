@@ -1,10 +1,10 @@
 import { Stack } from "expo-router";
 import "./global.css";
 import { auth } from "@/FirebaseConfig";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, User } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { User } from "firebase/auth";
 import { AppProvider } from "@/context/AppContext";
+import { View, ActivityIndicator } from "react-native";
 
 export default function RootLayout() {
   const [user, setUser] = useState<User | null>(null);
@@ -13,20 +13,24 @@ export default function RootLayout() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
-      setInitializing(false); // Set initializing to false when auth state is determined
+      setInitializing(false);
     });
-
     return unsubscribe;
   }, []);
 
   // Show loading indicator while initializing
   if (initializing) {
-    return null; // or you can render a loading spinner here
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#007AFF" />
+      </View>
+    );
   }
 
+  // Only render Stack after auth state is known !user ? "(auth)" :
   return (
     <AppProvider>
-      <Stack initialRouteName={user ? "(tabs)" : "(auth)"}>
+      <Stack initialRouteName={ "(tabs)"}>
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>

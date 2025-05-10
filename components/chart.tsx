@@ -15,10 +15,11 @@ type ChartProps = {
 
 const Chart: React.FC<ChartProps> = ({ data, maxHeight = 120 }) => {
   // Find the maximum value in the data for scaling
-  const maxValue = Math.max(
-    ...data.map((item) => Math.max(item.income, item.expense))
-  );
-  // Y-axis labels: 0%, 25%, 50%, 75%, 100%
+  const maxValue =
+    data.length > 0
+      ? Math.max(...data.map((item) => Math.max(item.income, item.expense)))
+      : 1; // fallback to 1 if no data
+
   const yAxisLabels = [
     0,
     maxValue * 0.25,
@@ -27,12 +28,17 @@ const Chart: React.FC<ChartProps> = ({ data, maxHeight = 120 }) => {
     maxValue,
   ];
 
+  {
+    yAxisLabels.map((value, idx) => <Text key={idx}>{value}</Text>);
+  }
+
   return (
     <View className="bg-green-100 p-4 rounded-2xl w-full h-[250px] overflow-hidden">
       {/* Header */}
       <View className="flex-row justify-between items-center mb-4">
         <Text className="text-base font-semibold text-gray-800">
-          Income & Expenses
+          <View className="p-2 bg-green-500 mx-2 rounded-full" /> Budget {"   "}
+          <View className="p-2 mx-2 bg-blue-700 rounded-full" /> Expenses
         </Text>
         <View className="flex-row space-x-3">
           <Pressable className="p-1 rounded-full bg-white">
@@ -52,7 +58,7 @@ const Chart: React.FC<ChartProps> = ({ data, maxHeight = 120 }) => {
             .slice()
             .reverse()
             .map((value) => (
-              <Text key={value} className="text-xs text-gray-500">
+              <Text key={value} className="text-xs text-gray-500 font-semibold">
                 {value === 0 ? "0" : `${value}`}
               </Text>
             ))}
@@ -65,7 +71,7 @@ const Chart: React.FC<ChartProps> = ({ data, maxHeight = 120 }) => {
             const expenseHeight = Math.max((expense / maxValue) * maxHeight, 6);
 
             return (
-              <View key={index} className="items-center flex-1">
+              <View key={`${column}-${index}`} className="items-center flex-1">
                 <View className="flex-row gap-1 mb-1 items-end">
                   <View
                     style={{ height: incomeHeight }}
@@ -76,7 +82,9 @@ const Chart: React.FC<ChartProps> = ({ data, maxHeight = 120 }) => {
                     className="w-1.5 bg-blue-500 rounded-full"
                   />
                 </View>
-                <Text className="text-xs text-gray-600">{column}</Text>
+                <Text className="text-xs text-gray-600 font-semibold overflow-hidden h-4">
+                  {column}
+                </Text>
               </View>
             );
           })}

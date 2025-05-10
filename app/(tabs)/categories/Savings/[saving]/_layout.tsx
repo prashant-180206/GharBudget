@@ -1,20 +1,23 @@
 import CustomHeader from "@/components/CustomHeader";
-import { Stack } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 
 export default function RootLayout() {
+  const { saving } = useLocalSearchParams();
+
   return (
     <Stack>
       <Stack.Screen
         name="index"
         options={{
           headerShown: true,
-          header: () => <CustomHeader title="Savings" />,
+          header: () => <CustomHeader title={`${saving}`} />,
         }}
       />
       <Stack.Screen
-        name="[saving]"
+        name="addsavings"
         options={{
-          headerShown: false,
+          headerShown: true,
+          header: () => <CustomHeader title="Add Savings" />,
         }}
       />
       {/* <Stack.Screen name="changebudget" options={{ headerShown: false }} /> */}

@@ -9,7 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { doc, setDoc, getDoc } from "firebase/firestore";
@@ -25,21 +25,49 @@ const ChangeBudget = () => {
       return acc;
     }, {} as Amounts)
   );
+  const [loading, setLoading] = useState(true);
+
+  const router = useRouter();
+
+  // Fetch budget data on mount and set as default values
+  useEffect(() => {
+    const fetchBudget = async () => {
+      try {
+        const userId = auth.currentUser?.uid;
+        if (!userId) return;
+        const docRef = doc(db, "budget", userId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          // Only set values for categories in ExpenseCategories
+          setAmounts((prev) =>
+            ExpenseCategories.reduce((acc, category) => {
+              acc[category.value] =
+                typeof data[category.value] === "string"
+                  ? data[category.value]
+                  : "";
+              return acc;
+            }, {} as Amounts)
+          );
+        }
+      } catch (err) {
+        // Optionally handle error
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBudget();
+  }, []);
 
   const handleChange = (value: string, key: string) => {
     setAmounts((prev) => ({ ...prev, [key]: value }));
   };
 
-  const router = useRouter();
-
   const handleSubmit = async () => {
     try {
       const userId = auth.currentUser?.uid;
       const now = new Date();
-      const year = now.getFullYear();
-      const month = now.getMonth() + 1;
-      const docId = `${userId}_${year}_${month}`;
-
+      const docId = `${userId}`;
       const budgetRef = doc(db, "budget", docId);
 
       await setDoc(budgetRef, {
@@ -49,10 +77,10 @@ const ChangeBudget = () => {
         Updated_At: now,
       });
 
-      router.push("/(tabs)/analysis");
+      router.push("/(tabs)/Account_Details");
     } catch (err) {
       Alert.alert("Error Changing Budget");
-      router.push("/(tabs)/analysis");
+      router.push("/(tabs)/Account_Details");
     }
   };
 
@@ -73,15 +101,15 @@ const ChangeBudget = () => {
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={{ flex: 1, width: "100%" }}
-            keyboardVerticalOffset={80} // Adjust if you have a taller header
+            keyboardVerticalOffset={80}
           >
             <ScrollView
-              className="bg-col_bg pb-20 w-full h-full px-4"
+              className="bg-col_bg pb-20 w-full h-full px-4 mb-32"
               keyboardShouldPersistTaps="handled"
             >
               <View className="flex flex-col items-center justify-evenly">
                 {ExpenseCategories.map((category) => (
-                  <View key={category.value} className="mb-4 flex flex-row ">
+                  <View key={category.value} className="mb-4 flex flex-row justify-between px-10 w-full items-start">
                     <Text className="text-xl font-medium text-Txt mb-1 w-3/6">
                       {category.label}
                     </Text>
@@ -101,6 +129,7 @@ const ChangeBudget = () => {
               <TouchableOpacity
                 onPress={handleSubmit}
                 className="bg-primary rounded-full py-3 mt-4"
+                disabled={loading}
               >
                 <Text className="text-center text-Txt-light font-bold text-xl">
                   Submit

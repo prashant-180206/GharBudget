@@ -13,12 +13,13 @@ export default function RootLayout() {
       />
 
       <Stack.Screen name="[category]" options={{ headerShown: false }} />
-      
+
       <Stack.Screen
         name="Savings"
         options={{
-          headerShown: true,
-          header: () => <CustomHeader title="Savings" />,
+          headerShown: false, 
+        
+      
         }}
       />
     </Stack>

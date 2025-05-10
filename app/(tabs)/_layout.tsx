@@ -65,6 +65,8 @@ export default function TabLayout() {
         name="transactions"
         options={{
           title: "Transactions",
+          headerShown: true,
+          header: () => <CustomHeader title="Transactions" />,
           tabBarIcon: ({ focused }) => (
             <View
               className={`w-16 h-16 rounded-3xl items-center justify-center ${
@@ -118,8 +120,7 @@ export default function TabLayout() {
         name="Account_Details"
         options={{
           title: "Account Details",
-          headerShown: true,
-          header: () => <CustomHeader title="Account Details" />,
+          headerShown:false,
           href: null,
         }}
       />

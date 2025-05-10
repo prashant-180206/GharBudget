@@ -32,7 +32,7 @@ interface ExpenseData {
   userId: string; // User ID of the person associated with the expense
 }
 
-const category = () => {
+const Category = () => {
   const router = useRouter();
   const { category } = useLocalSearchParams();
   const [ExpenseData, setExpenseData] = useState<
@@ -86,7 +86,9 @@ const category = () => {
         {/* Scrollable Content */}
         <View className="flex-1 w-full h-[80%] bg-col_bg rounded-t-[80px] pt-0 px-4 pb-32">
           <View className=" h-full w-full pt-12 px-6">
-            <ExpenseList ExpenseData={ExpenseData || []} />
+            <ScrollView className="">
+              <ExpenseList ExpenseData={ExpenseData || []} />
+            </ScrollView>
             <TouchableOpacity
               onPress={() =>
                 router.push(
@@ -106,4 +108,4 @@ const category = () => {
   );
 };
 
-export default category;
+export default Category;

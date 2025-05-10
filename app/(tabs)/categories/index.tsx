@@ -8,7 +8,7 @@ import {
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import CategoryGrid from "@/components/CategoryGrid";
+import CategoryGrid from "@/components/categories/CategoryGrid";
 import Dashboard from "@/components/tabs/Dashboard";
 
 const Transactions = () => {

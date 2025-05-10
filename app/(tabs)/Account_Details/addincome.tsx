@@ -8,10 +8,12 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
   Alert,
 } from "react-native";
 import React, { useState } from "react";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 import DateInput from "@/components/DateInput";
 import DropdownInput from "@/components/dropdown";
 import { ExpenseCategories } from "@/assets/constants";
@@ -21,34 +23,29 @@ import {
   addDoc,
   collection,
   doc,
+  getDoc,
   increment,
-  setDoc,
   updateDoc,
 } from "firebase/firestore";
 
-const AddExpense = () => {
+const income = () => {
   const router = useRouter();
-  const { category } = useLocalSearchParams();
 
-  const [selectedCategory, setSelectedCategory] = useState(
-    category ? category.toString() : ""
-  );
+  // const [selectedCategory, setSelectedCategory] = useState("");
   const [amount, setAmount] = useState("");
   const [expenseTitle, setExpenseTitle] = useState("");
   const [message, setMessage] = useState("");
   const [date, setDate] = useState(""); // Store the date as string initially
   const [error, setError] = useState("");
+  const [label, setlabel] = useState("Monthly");
 
   const ConvertDate = (dateString: string) => {
+    setDate(dateString);
     const convertedDate = new Date(dateString);
     return convertedDate;
   };
 
   const validateForm = () => {
-    if (!selectedCategory) {
-      setError("Please select a category.");
-      return false;
-    }
     if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
       setError("Please enter a valid amount.");
       return false;
@@ -61,66 +58,42 @@ const AddExpense = () => {
     return true;
   };
 
-  const ExpenseSubmit = async () => {
+  const IncomeSubmit = async () => {
     if (validateForm()) {
       try {
         const userId = auth.currentUser?.uid || "";
         const now = new Date();
-        const docId = `${userId}${now.getMonth()}${now.getFullYear()}`;
-        const budgetRef = doc(db, "monthly_expense", docId);
 
-        await setDoc(
-          budgetRef,
-          {
-            [selectedCategory]: increment(Number(amount)),
-          },
-          { merge: true }
-        );
-
-        await addDoc(collection(db, "expenses"), {
+        const docRef = await addDoc(collection(db, "income"), {
           userId: userId,
           Title: expenseTitle,
           Created_At: now,
-          Month: now.getMonth(),
-          Year: now.getFullYear(),
-          Category: selectedCategory,
           Amount: Number(amount),
           Date: ConvertDate(date),
+          Month: now.getMonth(),
+          Year: now.getFullYear(),
           Message: message,
+          Label: label,
         });
-
         const userDocRef = doc(db, "users", userId);
         await updateDoc(userDocRef, {
-          Expense_this_month: increment(Number(amount)),
+          Income_this_month: increment(Number(amount)),
         });
-
-        router.push(
-          category
-            ? `/(tabs)/categories/${category.toString()}`
-            : "/(tabs)/categories"
-        );
+        router.push("/(tabs)/transactions");
       } catch (err) {
         if (err instanceof Error) {
           Alert.alert(err.message);
         } else {
           Alert.alert("An unexpected error occurred.");
         }
-        router.push(
-          category
-            ? `/(tabs)/categories/${category.toString()}`
-            : "/(tabs)/categories"
-        );
+
+        router.push("/(tabs)/transactions");
       }
     }
   };
 
   return (
     <>
-      <StatusBar
-        barStyle="light-content"
-        translucent
-        backgroundColor="transparent"
-      />
       <View className="flex-1 bg-primary pt-10">
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -129,22 +102,7 @@ const AddExpense = () => {
           <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <View className="flex-1 bg-col_bg rounded-t-[80px] px-4 pb-32 justify-start pt-10 gap-8 items-center">
               <View className="w-5/6 flex justify-center items-center">
-                <DateInput onDateChange={setDate} />
-              </View>
-
-              {/* Category Input */}
-              <View className="w-5/6">
-                <Text className="font-semibold px-4 text-Txt-secondary">
-                  Category
-                </Text>
-                <DropdownInput
-                  items={ExpenseCategories}
-                  value={selectedCategory}
-                  onChange={setSelectedCategory}
-                  placeholder={
-                    category ? category.toString() : "Select Category"
-                  }
-                />
+                <DateInput onDateChange={(date) => setDate(date)} />
               </View>
 
               {/* Amount Input */}
@@ -164,13 +122,25 @@ const AddExpense = () => {
               {/* Expense Title Input */}
               <View className="w-5/6">
                 <Text className="p-2 font-semibold text-Txt-secondary">
-                  Expense Title
+                  IncomeTitle
                 </Text>
                 <TextInput
                   className="bg-col_bg-dark w-full rounded-full px-6 py-4"
-                  placeholder="Expense Title (optional)"
+                  placeholder="Income Title (optional)"
                   value={expenseTitle}
                   onChangeText={setExpenseTitle}
+                />
+              </View>
+              {/* Expense Title Input */}
+              <View className="w-5/6">
+                <Text className="p-2 font-semibold text-Txt-secondary">
+                  Income Label
+                </Text>
+                <TextInput
+                  className="bg-col_bg-dark w-full rounded-full px-6 py-4"
+                  placeholder="Monthly"
+                  value={label}
+                  onChangeText={setlabel}
                 />
               </View>
 
@@ -180,7 +150,7 @@ const AddExpense = () => {
                 placeholder="Enter Message (optional)"
                 placeholderTextColor={Colors.primary.DEFAULT}
                 multiline
-                numberOfLines={4}
+                numberOfLines={4} // Adjust this value based on how many lines you want to show by default
                 textAlignVertical="top"
                 value={message}
                 onChangeText={setMessage}
@@ -191,11 +161,11 @@ const AddExpense = () => {
 
               {/* Save Button */}
               <TouchableOpacity
-                onPress={ExpenseSubmit}
+                onPress={IncomeSubmit}
                 className="bg-primary p-2 rounded-full text-Txt w-3/6 text-center"
               >
                 <Text className="text-xl mx-4 font-semibold text-Txt text-center">
-                  Save
+                  Add Income
                 </Text>
               </TouchableOpacity>
             </View>
@@ -206,4 +176,4 @@ const AddExpense = () => {
   );
 };
 
-export default AddExpense;
+export default income;

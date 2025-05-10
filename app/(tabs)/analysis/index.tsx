@@ -19,7 +19,7 @@ const analysis = () => {
         >
           <TouchableOpacity
             onPress={() => {
-              router.push("/(tabs)/analysis/changebudget");
+              // router.push("/(tabs)/analysis/changebudget");
             }}
             className="bg-primary p-2 rounded-full text-Txt"
           >
@@ -29,7 +29,7 @@ const analysis = () => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              router.push("/(tabs)/analysis/changebudget");
+              // router.push("/(tabs)/analysis/changebudget");
             }}
             className="bg-primary p-2 rounded-full text-Txt"
           >

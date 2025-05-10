@@ -184,3 +184,4 @@ export const AppProvider: React.FC<DashboardProviderProps> = ({ children }) => {
 
 // 6. Hook
 export const useAppData = () => useContext(DashboardContext);
+

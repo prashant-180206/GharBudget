@@ -4,8 +4,8 @@ import { Timestamp } from "firebase/firestore";
 import { Ionicons } from "@expo/vector-icons";
 import { ExpenseTypes } from "@/assets/constants";
 
-// Define the ExpenseItem type
-interface ExpenseItem {
+// Define the SavingOrExpenseItem type
+interface SavingOrExpenseItem {
   Amount: number; // Amount of the expense
   Category: string; // Category of the expense (e.g., "Food")
   Created_At: Timestamp; // Timestamp when the expense is created
@@ -19,7 +19,7 @@ interface ExpenseItem {
 }
 
 type ExpenseListProps = {
-  ExpenseData?: ExpenseItem[];
+  ExpenseData?: SavingOrExpenseItem[];
 };
 
 const ExpenseList: React.FC<ExpenseListProps> = ({ ExpenseData = [] }) => {

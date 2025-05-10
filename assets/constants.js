@@ -27,3 +27,35 @@ export const ExpenseTypes = [
   { label: "Savings", icon: "wallet-outline", route: "Savings" },
   { label: "Other", icon: "ellipsis-horizontal-outline", route: "Other" },
 ];
+
+export const savingsCategories = [
+  {
+    label: "Emergency Fund",
+    icon: "alert-circle-outline",
+    route: "EmergencyFund",
+  },
+  { label: "Retirement", icon: "hourglass-outline", route: "Retirement" },
+  { label: "Education", icon: "school-outline", route: "Education" },
+  { label: "Vacation", icon: "airplane-outline", route: "Vacation" },
+  { label: "Home Purchase", icon: "home-outline", route: "HomePurchase" },
+  { label: "Investments", icon: "trending-up-outline", route: "Investments" },
+  { label: "Car", icon: "car-sport-outline", route: "Car" },
+  { label: "Wedding", icon: "heart-outline", route: "Wedding" },
+  {
+    label: "Other",
+    icon: "ellipsis-horizontal-outline",
+    route: "OtherSavings",
+  },
+];
+
+export const savingsCategoryOptions = [
+  { label: "Emergency Fund", value: "emergencyFund" },
+  { label: "Retirement", value: "retirement" },
+  { label: "Education", value: "education" },
+  { label: "Vacation", value: "vacation" },
+  { label: "Home Purchase", value: "homePurchase" },
+  { label: "Investments", value: "investments" },
+  { label: "Car", value: "car" },
+  { label: "Wedding", value: "wedding" },
+  { label: "Other", value: "otherSavings" },
+];
