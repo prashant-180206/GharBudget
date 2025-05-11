@@ -9,12 +9,13 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "@/FirebaseConfig";
 import { ExpenseCategories } from "@/assets/constants";
+import { useAnalysis } from "@/context/AnalysisContext";
 
 type Amounts = { [key: string]: string };
 
@@ -29,35 +30,28 @@ const ChangeBudget = () => {
 
   const router = useRouter();
 
-  // Fetch budget data on mount and set as default values
-  useEffect(() => {
-    const fetchBudget = async () => {
-      try {
-        const userId = auth.currentUser?.uid;
-        if (!userId) return;
-        const docRef = doc(db, "budget", userId);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          // Only set values for categories in ExpenseCategories
-          setAmounts((prev) =>
-            ExpenseCategories.reduce((acc, category) => {
-              acc[category.value] =
-                typeof data[category.value] === "string"
-                  ? data[category.value]
-                  : "";
-              return acc;
-            }, {} as Amounts)
-          );
-        }
-      } catch (err) {
-        // Optionally handle error
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchBudget();
-  }, []);
+  // Access budget data from context
+  const { Budget_Expense, loading: contextLoading } = useAnalysis();
+
+  // Set amounts from context when Budget_Expense changes
+  React.useEffect(() => {
+    if (Budget_Expense) {
+      setAmounts(
+        ExpenseCategories.reduce((acc, category) => {
+          const value = Budget_Expense[category.value];
+          acc[category.value] =
+            typeof value === "string"
+              ? value
+              : typeof value === "number"
+              ? value.toString()
+              : ""; // fallback for objects or undefined
+          return acc;
+        }, {} as Amounts)
+      );
+    }
+
+    setLoading(false);
+  }, [Budget_Expense]);
 
   const handleChange = (value: string, key: string) => {
     setAmounts((prev) => ({ ...prev, [key]: value }));
@@ -109,7 +103,10 @@ const ChangeBudget = () => {
             >
               <View className="flex flex-col items-center justify-evenly">
                 {ExpenseCategories.map((category) => (
-                  <View key={category.value} className="mb-4 flex flex-row justify-between px-10 w-full items-start">
+                  <View
+                    key={category.value}
+                    className="mb-4 flex flex-row justify-between px-10 w-full items-start"
+                  >
                     <Text className="text-xl font-medium text-Txt mb-1 w-3/6">
                       {category.label}
                     </Text>
@@ -129,7 +126,7 @@ const ChangeBudget = () => {
               <TouchableOpacity
                 onPress={handleSubmit}
                 className="bg-primary rounded-full py-3 mt-4"
-                disabled={loading}
+                disabled={loading || contextLoading}
               >
                 <Text className="text-center text-Txt-light font-bold text-xl">
                   Submit

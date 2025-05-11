@@ -1,12 +1,17 @@
-import React, { useCallback, useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import { useFocusEffect, useRouter } from "expo-router";
+import React from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
+import { useRouter } from "expo-router";
 import Dashboard from "@/components/tabs/Dashboard";
 import CustomHalfPieChart from "@/components/ringPieChart";
 import Chart from "@/components/chart";
-import { doc, getDoc } from "firebase/firestore";
-import { auth, db } from "@/FirebaseConfig";
 import { Colors } from "@/assets/colors";
+import { useAnalysis } from "@/context/AnalysisContext";
 
 type BudgetData = {
   [key: string]: string | number | { seconds: number; nanoseconds: number };
@@ -23,40 +28,23 @@ type TransformedEntry = {
   value: number;
 };
 
+// Utility to get a number from string | number | object
+function parseBudgetValue(
+  val: string | number | { seconds: number; nanoseconds: number }
+): number {
+  if (typeof val === "number") return val;
+  if (typeof val === "string" && !isNaN(Number(val))) return Number(val);
+  // Could handle timestamp objects here if needed
+  return 0;
+}
+
 const Account_Details = () => {
   const router = useRouter();
-  const [budgetData, setBudgetData] = useState<BudgetData | null>(null);
-  const [expenseData, setExpenseData] = useState<BudgetData | null>(null);
-
-  // Fetch budget data
-  const getBudgetData = async () => {
-    if (!auth.currentUser) return null;
-    const docRef = doc(db, "budget", auth.currentUser.uid);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      setBudgetData(data);
-      return data;
-    } else {
-      return null;
-    }
-  };
-
-  // Fetch expense data
-  const getExpenseData = async () => {
-    if (!auth.currentUser) return null;
-    const now = new Date();
-    const docid = `${auth.currentUser.uid}${now.getMonth()}${now.getFullYear()}`;
-    const docRef = doc(db, "monthly_expense", docid);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      setExpenseData(data);
-      return data;
-    } else {
-      return null;
-    }
-  };
+  const {
+    Budget_Expense: budgetData,
+    Monthly_Expense: expenseData,
+    loading,
+  } = useAnalysis();
 
   // Convert budget data for pie chart
   function BudgetDataToPieChart(data: BudgetData): TransformedEntry[] {
@@ -65,12 +53,12 @@ const Account_Details = () => {
       .filter(
         ([key, value]) =>
           !ignoreFields.includes(key) &&
-          typeof value === "string" &&
-          value.trim() !== ""
+          (typeof value === "string" || typeof value === "number") &&
+          parseBudgetValue(value) > 0
       )
       .map(([key, value]) => ({
         name: key.charAt(0).toUpperCase() + key.slice(1),
-        value: parseInt(value as string),
+        value: parseBudgetValue(value),
       }));
   }
 
@@ -84,11 +72,7 @@ const Account_Details = () => {
     const normalizedExpense: Record<string, number> = {};
     if (expense) {
       Object.entries(expense).forEach(([ekey, evalue]) => {
-        if (typeof evalue === "number") {
-          normalizedExpense[ekey.toLowerCase()] = evalue;
-        } else if (typeof evalue === "string" && !isNaN(Number(evalue))) {
-          normalizedExpense[ekey.toLowerCase()] = Number(evalue);
-        }
+        normalizedExpense[ekey.toLowerCase()] = parseBudgetValue(evalue);
       });
     }
 
@@ -96,27 +80,18 @@ const Account_Details = () => {
       .filter(
         ([key, value]) =>
           !ignoreFields.includes(key) &&
-          typeof value === "string" &&
-          value.trim() !== ""
+          (typeof value === "string" || typeof value === "number") &&
+          parseBudgetValue(value) > 0
       )
       .map(([key, value]) => {
         const lowerKey = key.toLowerCase();
         return {
           column: key.charAt(0).toUpperCase() + key.slice(1),
-          income: parseInt(value as string),
+          income: parseBudgetValue(value),
           expense: normalizedExpense[lowerKey] ?? 0,
         };
       });
   }
-
-  // Fetch data on screen focus
-  useFocusEffect(
-    useCallback(() => {
-      getBudgetData();
-      getExpenseData();
-      return () => {};
-    }, [])
-  );
 
   const hasBudget = budgetData && Object.keys(budgetData).length > 0;
   const hasExpense = expenseData && Object.keys(expenseData).length > 0;
@@ -132,38 +107,50 @@ const Account_Details = () => {
       <View className="w-full h-[80%] bg-col_bg absolute bottom-0 rounded-t-[80px] flex flex-col items-center justify-start gap-0">
         <View className="h-full w-full pt-12 pb-32 px-6 ">
           <ScrollView className="mb-32">
-            <View className="bg-button-light p-4 rounded-[4rem] items-center">
-              {hasBudget && (
+            {loading && (
+              <View className="items-center justify-center py-12">
+                <ActivityIndicator
+                  size="large"
+                  color={Colors.primary.DEFAULT}
+                />
+                <Text>Loading data...</Text>
+              </View>
+            )}
+
+            {!loading && hasBudget && (
+              <View className="bg-button-light p-4 rounded-[4rem] items-center">
                 <CustomHalfPieChart
                   data={BudgetDataToPieChart(budgetData!)}
                   backgroundColor={Colors.button.light}
                 />
-              )}
-              <View className="flex flex-row w-5/6 gap-4 pt-2">
-                <Text className="bg-primary p-2 rounded-full text-center flex-1 font-semibold">
-                  Budget Set By User
-                </Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    router.push("/(tabs)/Account_Details/changebudget");
-                  }}
-                >
-                  <Text className="bg-primary p-2 rounded-full text-center flex-1 font-semibold px-4">
-                    Modify Budget
+                <View className="flex flex-row w-5/6 gap-4 pt-2">
+                  <Text className="bg-primary p-2 rounded-full text-center flex-1 font-semibold">
+                    Budget Set By User
                   </Text>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      router.push("/(tabs)/Account_Details/changebudget");
+                    }}
+                  >
+                    <Text className="bg-primary p-2 rounded-full text-center flex-1 font-semibold px-4">
+                      Modify Budget
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-            <View className="mt-4">
-              {hasBudget && hasExpense && (
+            )}
+
+            {!loading && hasBudget && hasExpense && (
+              <View className="mt-4">
                 <Chart
                   data={BudgetDataToChart(budgetData!, expenseData!)}
                   maxHeight={120}
                 />
-              )}
-            </View>
+              </View>
+            )}
+
             <TouchableOpacity
-              className="w-full p-4 bg-primary rounded-full "
+              className="w-full p-4 bg-primary rounded-full mt-6"
               onPress={() => {
                 router.push("/(tabs)/Account_Details/addincome");
               }}

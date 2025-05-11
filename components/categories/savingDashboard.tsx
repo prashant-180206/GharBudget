@@ -19,9 +19,8 @@ interface SavingExpense {
 }
 
 const SavingDashboard: React.FC<SavingDashboardProps> = ({}) => {
-
   const { goal, savingexpense, loading } = useSavings();
-  
+
   const [saving, setSaving] = useState(0);
   const [expense, setExpense] = useState(0);
 
@@ -63,13 +62,13 @@ const SavingDashboard: React.FC<SavingDashboardProps> = ({}) => {
           </View>
         </View>
         {/* Divider */}
-        
+
         {/* Right section */}
         <View className="w-[50%]  flex flex-col justify-evenly my-4">
           <View className="flex-row items-center mb-2">
             <Ionicons name="cash-outline" size={40} />
             <View className="ml-2">
-              <Text className="text-xs text-gray-900 font-medium">
+              <Text className="text-sm text-gray-900 font-medium">
                 Total Savings Goal
               </Text>
               <Text className="text-lg text-gray-900 font-bold">{saving}</Text>
@@ -79,10 +78,12 @@ const SavingDashboard: React.FC<SavingDashboardProps> = ({}) => {
           <View className="flex-row items-center ">
             <Ionicons name="trending-up-outline" size={40} color="#222" />
             <View className="ml-2">
-              <Text className="text-xs text-gray-900 font-medium">
+              <Text className="text-sm text-gray-900 font-medium">
                 Total Saved Amount
               </Text>
-              <Text className="text-lg text-blue-500 font-bold">{expense}</Text>
+              <Text className="text-lg text-button-dark font-bold">
+                {expense}
+              </Text>
             </View>
           </View>
         </View>
