@@ -16,7 +16,10 @@ const CircularIconLoader = ({
   const rotation = (progress * 360) / 100;
 
   return (
-    <View className="items-center bg-button-light rounded-[25%] p-4 pb-2">
+    <View
+      className="items-center rounded-[25%] p-4 pb-2"
+      style={{ backgroundColor }}
+    >
       {/* Circular Progress Bar */}
       <View
         className="justify-center items-center w-5/6 aspect-square rounded-[25%]"
@@ -86,7 +89,7 @@ const CircularIconLoader = ({
       {/* Title below the loader */}
       <Text
         className="mt-2 text-xl font-semibold w-5/6 text-center"
-        style={{ color: inactiveColor }}
+        style={{ color: iconColor }}
       >
         {title}
       </Text>

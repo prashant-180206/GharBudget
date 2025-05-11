@@ -13,6 +13,7 @@ import { useRouter } from "expo-router";
 import Dashboard from "@/components/tabs/Dashboard";
 import { useAppData } from "@/context/AppContext";
 import CombinedList from "@/components/tabs/ExpenseView";
+import SavingDashboard from "@/components/categories/savingDashboard";
 
 // import Btn from "@/components/Btn";
 
@@ -33,7 +34,7 @@ const home = () => {
           <View className="w-5/6 flex flex-row items-center justify-between m-3">
             <View>
               <Text className="text-heading font-bold text-2xl ">
-                Hello ! , {userData?.fullName.split(" ")[0]}
+                Hello !, {userData?.fullName.split(" ")[0]}
               </Text>
               <Text className="text-heading-secondary font-semibold">
                 Welcome Back !
@@ -61,9 +62,14 @@ const home = () => {
           </TouchableOpacity>
         </View>
 
-        <View className="w-full h-[70%] bg-col_bg absolute bottom-0 rounded-t-[80px] flex flex-col items-center justify-start gap-0  ">
-          <View className="h-full w-full pt-12 pb-32 overflow-hidden px-6">
-            <CombinedList />
+        <View className="w-full h-[70%] bg-col_bg absolute bottom-0 rounded-t-[80px] flex flex-col items-center justify-start pb-32">
+          <View className="w-full h-full  flex flex-col items-center justify-between pt-8">
+            <View className="h-[16%] w-5/6  ">
+              <SavingDashboard />
+            </View>
+            <View className="h-[58%]  w-5/6">
+              <CombinedList />
+            </View>
           </View>
         </View>
       </SafeAreaView>

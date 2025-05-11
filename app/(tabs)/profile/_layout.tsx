@@ -46,6 +46,13 @@ export default function RootLayout() {
           header: () => <CustomHeader title="Settings" />,
         }}
       />
+      <Stack.Screen
+        name="TermsAndConditions"
+        options={{
+          headerShown: true,
+          header: () => <CustomHeader title="Terms And Conditions" />,
+        }}
+      />
     </Stack>
   );
 }

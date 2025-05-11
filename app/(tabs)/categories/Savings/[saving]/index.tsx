@@ -27,6 +27,10 @@ import {
 } from "firebase/firestore";
 import { db, auth } from "@/FirebaseConfig";
 import SavingList from "@/components/expense/savingList";
+import { useSavings } from "@/context/SavingContext";
+import { Ionicons } from "@expo/vector-icons";
+import LoadingBar from "@/components/loadingBar";
+import { Colors } from "@/assets/colors";
 
 type Category = {
   label: string;
@@ -51,11 +55,13 @@ const Savings = () => {
   const router = useRouter();
   const { saving } = useLocalSearchParams();
 
+  const { goal, savingexpense } = useSavings();
+
   const [RouteInfo, setRouteInfo] = useState<Category | null>(null);
   const [goalModalVisible, setGoalModalVisible] = useState(false);
   const [goalAmount, setGoalAmount] = useState<string>("");
   const [savingData, setSavingData] = useState<SavingItem[] | null>(null);
-  const [currentGoal, setCurrentGoal] = useState<number | null>(null);
+  // const [currentGoal, setCurrentGoal] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
 
   // Fetch savings data for this category
@@ -95,35 +101,18 @@ const Savings = () => {
   };
 
   // Fetch current goal for this category
-  const fetchGoal = async (userId: string, route: string) => {
-    try {
-      const docRef = doc(db, "savings_goals", userId);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        if (data && data[route] !== undefined) {
-          setCurrentGoal(Number(data[route]));
-        } else {
-          setCurrentGoal(null);
-        }
-      } else {
-        setCurrentGoal(null);
-      }
-    } catch (error) {
-      setCurrentGoal(null);
-    }
-  };
 
   useFocusEffect(
     useCallback(() => {
       getCategoryData();
+      // console.log(goal, savingexpense);
       const routeinfo =
         savingsCategories.find((val) => val.route == saving) || null;
       setRouteInfo(routeinfo);
       if (auth.currentUser && routeinfo) {
-        fetchGoal(auth.currentUser.uid, routeinfo.route);
+        // fetchGoal(auth.currentUser.uid, routeinfo.route);
       } else {
-        setCurrentGoal(null);
+        // setCurrentGoal(null);
       }
       return () => {};
     }, [saving])
@@ -155,8 +144,6 @@ const Savings = () => {
       );
       setGoalModalVisible(false);
       setGoalAmount("");
-      // Refresh goal display
-      fetchGoal(auth.currentUser.uid, RouteInfo.route);
     } catch (error) {
       Alert.alert("Error", "Failed to set goal. Please try again.");
     }
@@ -165,23 +152,101 @@ const Savings = () => {
   return (
     <View className="h-full w-full bg-primary ">
       <View className="mt-[8%] w-full h-[92%]  absolute rounded-t-[80px] flex flex-col justify-start items-center pb-32 bg-col_bg pt-10">
-        <View className="flex flex-row justify-between">
-          <View>
-            <Text className="text-lg font-semibold">Goal</Text>
-            <Text className="text-base text-gray-500">
-              {currentGoal !== null ? `₹${currentGoal}` : "No goal set"}
+        <View className="w-5/6">
+          <View className="flex flex-row justify-between">
+            <View className=" flex flex-col items-center justify-evenly w-3/6">
+              <View className="w-5/6 ">
+                <Text className="text-lg items-center justify-center">
+                  <Ionicons
+                    name="arrow-up-circle-outline"
+                    size={15}
+                    className="font-extrabold mr-2"
+                  />{" "}
+                  Goal
+                </Text>
+                <Text className="text-3xl text-Txt font-extrabold">
+                  {/* {currentGoal !== null ? `₹${currentGoal}` : "No goal set"} */}
+                  {"  "}₹
+                  {goal && goal !== null
+                    ? goal[`${saving}`]
+                      ? goal[`${saving}`].toLocaleString()
+                      : "0"
+                    : "No goal Set"}
+                </Text>
+              </View>
+              <View className="w-5/6 ">
+                <Text className="text-lg items-center justify-center">
+                  <Ionicons
+                    name="arrow-down-circle-outline"
+                    size={15}
+                    className="font-extrabold mr-2"
+                  />{" "}
+                  Saved Amount
+                </Text>
+                <Text className="text-3xl text-primary font-extrabold">
+                  {/* {currentGoal !== null ? `₹${currentGoal}` : "No goal set"} */}
+                  {"  "}₹
+                  {savingexpense && savingexpense !== null
+                    ? savingexpense[`${saving}`]
+                      ? savingexpense[`${saving}`].toLocaleString()
+                      : "0"
+                    : "No goal Set"}
+                </Text>
+              </View>
+            </View>
+            <View className="w-3/6">
+              <CircularIconLoader
+                icon={RouteInfo?.icon}
+                title={RouteInfo?.label}
+                iconSize={70}
+                iconColor="white"
+                progress={
+                  (savingexpense && goal
+                    ? (savingexpense[`${saving}`] * 100) / goal[`${saving}`]
+                    : 0) || 0
+                }
+              />
+            </View>
+          </View>
+          <View className="my-4">
+            <LoadingBar
+              progress={
+                100 -
+                (savingexpense && goal
+                  ? (savingexpense[`${saving}`] * 100) / goal[`${saving}`]
+                  : 0)
+              }
+              backgroundColor={Colors.Txt.DEFAULT}
+              fillColor={Colors.primary.DEFAULT}
+              startText={`${
+                savingexpense && goal
+                  ? (savingexpense[`${saving}`] * 100) / goal[`${saving}`]
+                  : 0
+              } %`}
+              endText={`₹ ${
+                goal && goal !== null
+                  ? goal[`${saving}`]
+                    ? goal[`${saving}`].toLocaleString()
+                    : "0"
+                  : "No goal Set"
+              }`}
+            />
+            <Text className="w-full text-center mt-2">
+              <Ionicons
+                name="checkmark-circle-sharp"
+                size={15}
+                className="mr-2"
+              />
+              {"  "}
+              {`${
+                savingexpense && goal
+                  ? (savingexpense[`${saving}`] * 100) / goal[`${saving}`]
+                  : 0
+              } % Amount Saved till now , Looks Good`}
             </Text>
           </View>
-          <View className="w-3/6">
-            <CircularIconLoader
-              icon={RouteInfo?.icon}
-              title={RouteInfo?.label}
-              iconSize={70}
-              iconColor="white"
-            />
-          </View>
         </View>
-        <View className="w-full h-[55%]">
+        <View className="w-full h-[45%] ">
           <ScrollView className=" w-full px-10 ">
             {loading ? (
               <ActivityIndicator

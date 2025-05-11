@@ -1,21 +1,61 @@
-import React from "react";
-
+import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   View,
-  ScrollView,
   Text,
   TouchableOpacity,
   Image,
   StatusBar,
 } from "react-native";
-
-import { Ionicons } from "@expo/vector-icons";
-import help from "./help";
 import { useRouter } from "expo-router";
+import { auth, db } from "@/FirebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
+import { Ionicons } from "@expo/vector-icons";
+import { Colors } from "@/assets/colors";
+import { useAppData } from "@/context/AppContext";
 
 export default function ProfileScreen() {
   const router = useRouter();
+
+  const { userData } = useAppData();
+
+  const [username, setUsername] = useState("Loading...");
+  const [userId, setUserId] = useState("");
+
+  const menuItems = [
+    {
+      title: "Edit Profile",
+      icon: "create-outline",
+      screen: "/(tabs)/profile/editprofile",
+    },
+    {
+      title: "Security",
+      icon: "lock-closed-outline",
+      screen: "/(tabs)/profile/security",
+    },
+    {
+      title: "Settings",
+      icon: "settings-outline",
+      screen: "/(tabs)/profile/settings",
+    },
+    {
+      title: "Help & Support",
+      icon: "help-circle-outline",
+      screen: "/(tabs)/profile/help",
+    },
+    {
+      title: "Logout",
+      icon: "log-out-outline",
+      action: () => {
+        auth.signOut();
+        router.replace("/(auth)/login");
+      },
+    },
+  ];
+  useEffect(() => {
+    setUsername(userData?.fullName as any);
+    setUserId(auth.currentUser?.uid as any);
+  }, []);
 
   return (
     <>
@@ -25,7 +65,6 @@ export default function ProfileScreen() {
         backgroundColor="transparent"
       />
       <SafeAreaView className="flex-1 bg-primary">
-        {/* White Layer Content */}
         <View className="flex-1 bg-col_bg absolute bottom-0 w-full h-[90%] rounded-t-[60px] pt-20 px-6">
           {/* Profile Image */}
           <View className="absolute -top-14 self-center">
@@ -37,60 +76,69 @@ export default function ProfileScreen() {
             />
           </View>
 
-          {/* Name and ID */}
+          {/* Username & ID */}
           <View className="items-center mb-6">
-            <Text className="text-lg font-bold text-heading-secondary">
-              John Smith
-            </Text>
-            <Text className="text-sm text-Txt">ID: 25030024</Text>
+            <Text className="text-lg font-bold text-heading">{username}</Text>
+            <Text className="text-sm text-Txt">ID: {userId}</Text>
           </View>
 
-          {/* Menu Items */}
-          {[
-            {
-              title: "Edit Profile",
-              icon: "person-outline",
-              screen: "editprofile",
-            },
-            {
-              title: "Security",
-              icon: "shield-checkmark-outline",
-              screen: "security",
-            },
-            { title: "Setting", icon: "settings-outline", screen: "settings" },
-            { title: "Help", icon: "help-circle-outline", screen: "help" },
-            { title: "Logout", icon: "log-out-outline", logout: true },
-          ].map(({ title, icon, screen, logout }, index) => (
+          {/* Menu List */}
+          {menuItems.map((item, index) => (
             <TouchableOpacity
               key={index}
               onPress={() =>
-                logout ? alert("Logged out!") : router.push("/(auth)")
+                item.action ? item.action() : router.push(item.screen as any)
               }
-              className="flex-row items-center bg-white rounded-xl px-4 py-3 mb-4 shadow"
+              className="flex-row items-center bg-col_bg p6 rounded-xl px-4 py-3 mb-4"
             >
-              {/* <Ionicons name={icon} size={24} color="#1E90FF" className="mr-4" /> */}
-              <Text className="text-base font-medium text-[#222]">{title}</Text>
+              <View className="p-2 bg-button-light rounded-2xl">
+                <Ionicons
+                  name={item.icon as any}
+                  size={40}
+                  color={Colors.col_bg.DEFAULT}
+                />
+              </View>
+              <Text className="text font-medium text-[#222] ml-4">
+                {item.title}
+              </Text>
             </TouchableOpacity>
           ))}
         </View>
-
-        {/* Bottom Navigation */}
-        <View className="absolute bottom-0 w-full items-center">
-          <View className="flex-row bg-[#E8F9EF] px-6 py-3 rounded-t-3xl w-11/12 justify-between">
-            {[
-              { icon: "home-outline" },
-              { icon: "bar-chart-outline" },
-              { icon: "swap-horizontal-outline" },
-              { icon: "layers-outline" },
-              { icon: "person-circle-outline" },
-            ].map((item, i) => (
-              <TouchableOpacity key={i}>
-                {/* <Ionicons name={item.icon} size={24} color="#1E90FF" /> */}
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
       </SafeAreaView>
     </>
+  );
+}
+
+// Below are basic templates for each routed screen:
+
+export function EditProfile() {
+  return (
+    <View className="flex-1 justify-center items-center bg-white">
+      <Text className="text-lg font-bold">Edit Profile Screen</Text>
+    </View>
+  );
+}
+
+export function Security() {
+  return (
+    <View className="flex-1 justify-center items-center bg-white">
+      <Text className="text-lg font-bold">Security Screen</Text>
+    </View>
+  );
+}
+
+export function Settings() {
+  return (
+    <View className="flex-1 justify-center items-center bg-white">
+      <Text className="text-lg font-bold">Settings Screen</Text>
+    </View>
+  );
+}
+
+export function Help() {
+  return (
+    <View className="flex-1 justify-center items-center bg-white">
+      <Text className="text-lg font-bold">Help & Support Screen</Text>
+    </View>
   );
 }

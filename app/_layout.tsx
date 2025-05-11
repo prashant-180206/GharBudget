@@ -5,6 +5,7 @@ import { onAuthStateChanged, User } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { AppProvider } from "@/context/AppContext";
 import { View, ActivityIndicator } from "react-native";
+import { SavingsProvider } from "@/context/SavingContext";
 
 export default function RootLayout() {
   const [user, setUser] = useState<User | null>(null);
@@ -29,11 +30,13 @@ export default function RootLayout() {
 
   // Only render Stack after auth state is known !user ? "(auth)" :
   return (
-    <AppProvider>
-      <Stack initialRouteName={ "(tabs)"}>
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      </Stack>
-    </AppProvider>
+    <SavingsProvider>
+      <AppProvider>
+        <Stack initialRouteName={!user ? "(auth)" : "(tabs)"}>
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        </Stack>
+      </AppProvider>
+    </SavingsProvider>
   );
 }

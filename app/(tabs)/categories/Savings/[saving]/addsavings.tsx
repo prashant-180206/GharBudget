@@ -34,7 +34,7 @@ const AddSavings = () => {
     saving ? saving.toString() : ""
   );
   const [amount, setAmount] = useState("");
-  const [savingTitle, setSavingTitle] = useState("");
+  const [savingTitle, setSavingTitle] = useState(`${saving}`);
   const [message, setMessage] = useState("");
   const [date, setDate] = useState(""); // Store the date as string initially
   const [error, setError] = useState("");
@@ -83,23 +83,23 @@ const AddSavings = () => {
           Created_At: now,
           Month: now.getMonth(),
           Year: now.getFullYear(),
-          Category: 'Savings',
+          Category: "Savings",
           Amount: Number(amount),
           Date: ConvertDate(date),
           Message: message,
         });
 
         await addDoc(collection(db, "savings"), {
-            userId: userId,
-            Title: savingTitle,
-            Created_At: now,
-            Month: now.getMonth(),
-            Year: now.getFullYear(),
-            Category: selectedCategory,
-            Amount: Number(amount),
-            Date: ConvertDate(date),
-            Message: message,
-          });
+          userId: userId,
+          Title: savingTitle,
+          Created_At: now,
+          Month: now.getMonth(),
+          Year: now.getFullYear(),
+          Category: selectedCategory,
+          Amount: Number(amount),
+          Date: ConvertDate(date),
+          Message: message,
+        });
 
         const userDocRef = doc(db, "users", userId);
         await updateDoc(userDocRef, {
@@ -108,7 +108,7 @@ const AddSavings = () => {
 
         router.push(
           saving
-            ? `/(tabs)/categories/${saving.toString()}`
+            ? `/(tabs)/categories/Savings/${saving.toString()}`
             : "/(tabs)/categories"
         );
       } catch (err) {
