@@ -25,7 +25,7 @@ const Transactions = () => {
               <Text className="text-2xl font-bold">
                 {userData?.Income_this_month
                   ? userData?.Income_this_month - userData?.Expense_this_month
-                  : "qwertyuiop"}
+                  : "Add Income to see"}
               </Text>
             </View>
 

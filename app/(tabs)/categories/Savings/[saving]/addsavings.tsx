@@ -66,8 +66,8 @@ const AddSavings = () => {
       try {
         const userId = auth.currentUser?.uid || "";
         const now = new Date();
-        const docId = `${userId}${now.getMonth()}${now.getFullYear()}`;
-        const budgetRef = doc(db, "saving_expense", docId);
+        // const docId = `${userId}`;
+        const budgetRef = doc(db, "saving_expense", userId);
 
         await setDoc(
           budgetRef,

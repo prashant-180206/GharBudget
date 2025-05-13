@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  Modal,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
 import Dashboard from "@/components/tabs/Dashboard";
@@ -12,6 +15,8 @@ import CustomHalfPieChart from "@/components/ringPieChart";
 import Chart from "@/components/chart";
 import { Colors } from "@/assets/colors";
 import { useAnalysis } from "@/context/AnalysisContext";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { auth, db } from "@/FirebaseConfig";
 
 type BudgetData = {
   [key: string]: string | number | { seconds: number; nanoseconds: number };
@@ -46,6 +51,8 @@ const Account_Details = () => {
     loading,
   } = useAnalysis();
 
+  const [ResetModalVisible, setResetModalVisible] = useState(false);
+
   // Convert budget data for pie chart
   function BudgetDataToPieChart(data: BudgetData): TransformedEntry[] {
     const ignoreFields = ["Created_At", "Updated_At", "user_Id"];
@@ -61,6 +68,20 @@ const Account_Details = () => {
         value: parseBudgetValue(value),
       }));
   }
+
+  const resetDetails = async () => {
+    const docref = doc(db, "users", `${auth.currentUser?.uid}`);
+    // const docinfo = await getDoc(docref);
+    await setDoc(
+      docref,
+      {
+        Expense_this_month: 0,
+        Income_this_month: 0,
+      },
+      { merge: true }
+    );
+    // console.log(docinfo.data());
+  };
 
   // Combine budget and expense data for chart
   function BudgetDataToChart(
@@ -107,6 +128,33 @@ const Account_Details = () => {
       <View className="w-full h-[80%] bg-col_bg absolute bottom-0 rounded-t-[80px] flex flex-col items-center justify-start gap-0">
         <View className="h-full w-full pt-12 pb-32 px-6 ">
           <ScrollView className="mb-32">
+            <View className="flex flex-row gap-4 justify-evenly">
+              <TouchableOpacity
+                className=" p-4 px-4 bg-primary rounded-full mb-6"
+                onPress={() => {
+                  router.push("/(tabs)/Account_Details/addincome");
+                }}
+              >
+                <Text className="text-center  mx-2 font-semibold ">
+                  Add Income
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className=" p-4 px-4 bg-primary rounded-full mb-6"
+                onPress={() => {
+                  setResetModalVisible(true);
+                }}
+              >
+                <Text className="text-center  mx-2 font-semibold ">
+                  Reset Balance And Expense
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <Text className="p-4 bg-button-light text-Txt rounded-full mb-6 text-center font-semibold text-xl">
+              Analyse Budget And Expenses Below
+            </Text>
+
             {loading && (
               <View className="items-center justify-center py-12">
                 <ActivityIndicator
@@ -148,20 +196,52 @@ const Account_Details = () => {
                 />
               </View>
             )}
-
-            <TouchableOpacity
-              className="w-full p-4 bg-primary rounded-full mt-6"
-              onPress={() => {
-                router.push("/(tabs)/Account_Details/addincome");
-              }}
-            >
-              <Text className="text-center font-semibold text-xl">
-                Add Income
-              </Text>
-            </TouchableOpacity>
           </ScrollView>
         </View>
       </View>
+      <Modal
+        visible={ResetModalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => {}}
+      >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          className="flex-1"
+        >
+          <View className="flex-1 justify-center items-center bg-black/50">
+            <View className="bg-white rounded-2xl p-8 w-5/6 items-center">
+              <Text className="text-xl font-bold mb-4 w-5/6">
+                Reseting Will make your current Expenses and Budget to Zero
+              </Text>
+              <Text className="text-xl font-semibold mb-6 w-5/6">
+                It is recommended to use this feature only when you are starting
+                a new month
+              </Text>
+
+              <View className="flex flex-row gap-4">
+                <TouchableOpacity
+                  className="bg-primary px-4 py-2 rounded-full"
+                  onPress={() => {
+                    resetDetails();
+                    setResetModalVisible(false);
+                  }}
+                >
+                  <Text className="text-white font-semibold">
+                    Reset Expense And Balance
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  className="bg-gray-300 px-4 py-2 rounded-full"
+                  onPress={() => setResetModalVisible(false)}
+                >
+                  <Text className="font-semibold">Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
     </View>
   );
 };

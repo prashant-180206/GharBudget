@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  ScrollView,
 } from "react-native";
 import React, { useState } from "react";
 import { useRouter } from "expo-router";
@@ -106,91 +107,97 @@ const Income = () => {
       >
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View className="flex-1 bg-col_bg rounded-t-[80px] px-4 pb-32 justify-start pt-10 gap-8 items-center">
-            {/* Show context summary if available */}
-            {!loading && (
-              <View className="w-5/6 mb-2">
-                <Text className="text-lg font-semibold text-Txt-secondary">
-                  Current Month Income:{" "}
-                  <Text className="font-bold text-primary">
-                    ₹{currentIncome}
-                  </Text>
-                </Text>
-                <Text className="text-lg font-semibold text-Txt-secondary">
-                  Budgeted Income:{" "}
-                  <Text className="font-bold text-primary">
-                    ₹{currentBudget as String}
-                  </Text>
-                </Text>
-              </View>
-            )}
+            <View className="w-full h-full ">
+              <ScrollView className="w-full h-full">
+                <View className="flex flex-col w-full gap-4 items-center">
+                  {/* Show context summary if available */}
+                  {!loading && (
+                    <View className="w-5/6 mb-2">
+                      <Text className="text-lg font-semibold text-Txt-secondary">
+                        Current Month Income:{" "}
+                        <Text className="font-bold text-primary">
+                          ₹{currentIncome}
+                        </Text>
+                      </Text>
+                      <Text className="text-lg font-semibold text-Txt-secondary">
+                        Budgeted Income:{" "}
+                        <Text className="font-bold text-primary">
+                          ₹{currentBudget as String}
+                        </Text>
+                      </Text>
+                    </View>
+                  )}
 
-            <View className="w-5/6 flex justify-center items-center">
-              <DateInput onDateChange={(date) => setDate(date)} />
+                  <View className="w-5/6 flex justify-center items-center">
+                    <DateInput onDateChange={(date) => setDate(date)} />
+                  </View>
+
+                  {/* Amount Input */}
+                  <View className="w-5/6">
+                    <Text className="p-2 font-semibold text-Txt-secondary">
+                      Enter Amount
+                    </Text>
+                    <TextInput
+                      className="bg-col_bg-dark w-full rounded-full px-6 py-4"
+                      placeholder="Enter Amount"
+                      keyboardType="numeric"
+                      value={amount}
+                      onChangeText={setAmount}
+                    />
+                  </View>
+
+                  {/* Income Title Input */}
+                  <View className="w-5/6">
+                    <Text className="p-2 font-semibold text-Txt-secondary">
+                      Income Title
+                    </Text>
+                    <TextInput
+                      className="bg-col_bg-dark w-full rounded-full px-6 py-4"
+                      placeholder="Income Title (optional)"
+                      value={expenseTitle}
+                      onChangeText={setExpenseTitle}
+                    />
+                  </View>
+                  {/* Income Label Input */}
+                  <View className="w-5/6">
+                    <Text className="p-2 font-semibold text-Txt-secondary">
+                      Income Label
+                    </Text>
+                    <TextInput
+                      className="bg-col_bg-dark w-full rounded-full px-6 py-4"
+                      placeholder="Monthly"
+                      value={label}
+                      onChangeText={setlabel}
+                    />
+                  </View>
+
+                  {/* Message Input */}
+                  <TextInput
+                    className="bg-col_bg-dark w-5/6 h-32 rounded-xl px-6 py-4 text-primary"
+                    placeholder="Enter Message (optional)"
+                    placeholderTextColor={Colors.primary.DEFAULT}
+                    multiline
+                    numberOfLines={4}
+                    textAlignVertical="top"
+                    value={message}
+                    onChangeText={setMessage}
+                  />
+
+                  {/* Error Message */}
+                  {error ? <Text className="text-red-500">{error}</Text> : null}
+
+                  {/* Save Button */}
+                  <TouchableOpacity
+                    onPress={IncomeSubmit}
+                    className="bg-primary p-2 rounded-full text-Txt w-3/6 text-center"
+                  >
+                    <Text className="text-xl mx-4 font-semibold text-Txt text-center">
+                      Add Income
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </ScrollView>
             </View>
-
-            {/* Amount Input */}
-            <View className="w-5/6">
-              <Text className="p-2 font-semibold text-Txt-secondary">
-                Enter Amount
-              </Text>
-              <TextInput
-                className="bg-col_bg-dark w-full rounded-full px-6 py-4"
-                placeholder="Enter Amount"
-                keyboardType="numeric"
-                value={amount}
-                onChangeText={setAmount}
-              />
-            </View>
-
-            {/* Income Title Input */}
-            <View className="w-5/6">
-              <Text className="p-2 font-semibold text-Txt-secondary">
-                Income Title
-              </Text>
-              <TextInput
-                className="bg-col_bg-dark w-full rounded-full px-6 py-4"
-                placeholder="Income Title (optional)"
-                value={expenseTitle}
-                onChangeText={setExpenseTitle}
-              />
-            </View>
-            {/* Income Label Input */}
-            <View className="w-5/6">
-              <Text className="p-2 font-semibold text-Txt-secondary">
-                Income Label
-              </Text>
-              <TextInput
-                className="bg-col_bg-dark w-full rounded-full px-6 py-4"
-                placeholder="Monthly"
-                value={label}
-                onChangeText={setlabel}
-              />
-            </View>
-
-            {/* Message Input */}
-            <TextInput
-              className="bg-col_bg-dark w-5/6 h-32 rounded-xl px-6 py-4 text-primary"
-              placeholder="Enter Message (optional)"
-              placeholderTextColor={Colors.primary.DEFAULT}
-              multiline
-              numberOfLines={4}
-              textAlignVertical="top"
-              value={message}
-              onChangeText={setMessage}
-            />
-
-            {/* Error Message */}
-            {error ? <Text className="text-red-500">{error}</Text> : null}
-
-            {/* Save Button */}
-            <TouchableOpacity
-              onPress={IncomeSubmit}
-              className="bg-primary p-2 rounded-full text-Txt w-3/6 text-center"
-            >
-              <Text className="text-xl mx-4 font-semibold text-Txt text-center">
-                Add Income
-              </Text>
-            </TouchableOpacity>
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>

@@ -1,7 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   // NOTE: Update this to include the paths to all of your component files.
-  content: ["./app/**/**/**/*.{js,jsx,ts,tsx}", "./components/**/**/*.{js,jsx,ts,tsx}"],
+  content: [
+    "./app/**/**/**/*.{js,jsx,ts,tsx}",
+    "./components/**/**/**/*.{js,jsx,ts,tsx}",
+  ],
   presets: [require("nativewind/preset")],
   theme: {
     extend: {
@@ -14,7 +17,7 @@ module.exports = {
         col_bg: {
           DEFAULT: "#E8FBEA",
           light: "#F1FFF3",
-          dark: "#DFF7E2",
+          dark: "#cFe7d2",
         },
         card: {
           1: "#B8F2E6", // light teal-green

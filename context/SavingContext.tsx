@@ -33,10 +33,10 @@ const SavingsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     }
 
     const now = new Date();
-    const docId = `${userId}${now.getMonth()}${now.getFullYear()}`;
+    // const docId = `${userId}${now.getMonth()}${now.getFullYear()}`;
 
     const goalDocRef = doc(db, "savings_goals", userId);
-    const expenseDocRef = doc(db, "saving_expense", docId);
+    const expenseDocRef = doc(db, "saving_expense", userId);
 
     let goalLoaded = false;
     let expenseLoaded = false;

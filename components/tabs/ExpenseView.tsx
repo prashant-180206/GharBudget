@@ -80,7 +80,7 @@ const CombinedList: React.FC<CombinedListProps> = ({ filterType = "all" }) => {
           key={idx}
           className={`rounded-xl mb-2 p-4 flex flex-row justify-between items-center`}
         >
-          <View className="flex flex-row gap-5 items-center border-r-2 border-primary pr-3 w-[55%] overflow-hidden">
+          <View className="flex flex-row gap-5 items-center border-r-2 border-primary pr-2 w-[55%] overflow-hidden ">
             <View className="p-4 rounded-[25%] bg-button-light">
               {item.type === "income" ? (
                 <Ionicons name="cash-outline" size={40} color="white" />

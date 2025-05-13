@@ -58,6 +58,7 @@ const SavingDashboard: React.FC<SavingDashboardProps> = ({}) => {
               iconSize={50}
               title="Savings"
               iconColor={Colors.Txt.DEFAULT}
+              progress={(expense/saving)*100}
             />
           </View>
         </View>

@@ -17,7 +17,7 @@ export const ExpenseTypes = [
   { label: "Food", icon: "fast-food-outline", route: "Food" },
   { label: "Daily", icon: "calendar-outline", route: "Daily" },
   { label: "Groceries", icon: "cart-outline", route: "Groceries" },
-  { label: "Travel", icon: "car-outline", route: "Travel" },
+  { label: "Travel", icon: "car-sport-outline", route: "Travel" },
   { label: "Rent", icon: "home-outline", route: "Rent" },
   { label: "Health", icon: "medkit-outline", route: "Health" },
   { label: "Entertainment", icon: "tv-outline", route: "Entertainment" },

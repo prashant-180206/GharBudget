@@ -10,10 +10,17 @@ type DataItem = {
 
 type ChartProps = {
   data: DataItem[];
-  maxHeight?: number; // Optional: height of the tallest bar in px
+  maxHeight?: number;
+  col1: String;
+  col2: String; // Optional: height of the tallest bar in px
 };
 
-const Chart: React.FC<ChartProps> = ({ data, maxHeight = 120 }) => {
+const Chart: React.FC<ChartProps> = ({
+  data,
+  maxHeight = 120,
+  col1 = "Budget",
+  col2 = "Expense",
+}) => {
   // Find the maximum value in the data for scaling
   const maxValue =
     data.length > 0
@@ -37,8 +44,9 @@ const Chart: React.FC<ChartProps> = ({ data, maxHeight = 120 }) => {
       {/* Header */}
       <View className="flex-row justify-between items-center mb-4">
         <Text className="text-base font-semibold text-gray-800">
-          <View className="p-2 bg-green-500 mx-2 rounded-full" /> Budget {"   "}
-          <View className="p-2 mx-2 bg-blue-700 rounded-full" /> Expenses
+          <View className="p-2 bg-green-500 mx-2 rounded-full" /> {col1} {"   "}
+          <View className="p-2 mx-2 bg-blue-700 rounded-full" />{" "}
+          {col2}
         </Text>
         <View className="flex-row space-x-3">
           <Pressable className="p-1 rounded-full bg-white">

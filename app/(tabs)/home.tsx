@@ -34,7 +34,7 @@ const home = () => {
           <View className="w-5/6 flex flex-row items-center justify-between m-3">
             <View>
               <Text className="text-heading font-bold text-2xl ">
-                Hello !,  {userData?.fullName.split(" ")[0]}
+                Hello ! , {userData?.fullName.split(" ")[0]}
               </Text>
               <Text className="text-heading-secondary font-semibold">
                 Welcome Back !
@@ -74,7 +74,7 @@ const home = () => {
                 <SavingDashboard />
               </View>
             </TouchableOpacity>
-            <View className="h-[58%]  w-5/6">
+            <View className="h-[58%]  w-[87%]">
               <CombinedList />
             </View>
           </View>

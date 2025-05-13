@@ -218,11 +218,10 @@ const Savings = () => {
               }
               backgroundColor={Colors.Txt.DEFAULT}
               fillColor={Colors.primary.DEFAULT}
-              startText={`${
-                savingexpense && goal
-                  ? (savingexpense[`${saving}`] * 100) / goal[`${saving}`]
-                  : 0
-              } %`}
+              startText={`${(savingexpense && goal
+                ? (savingexpense[`${saving}`] * 100) / goal[`${saving}`]
+                : 0
+              ).toFixed(2)} %`}
               endText={`₹ ${
                 goal && goal !== null
                   ? goal[`${saving}`]
@@ -238,11 +237,10 @@ const Savings = () => {
                 className="mr-2"
               />
               {"  "}
-              {`${
-                savingexpense && goal
-                  ? (savingexpense[`${saving}`] * 100) / goal[`${saving}`]
-                  : 0
-              } % Amount Saved till now , Looks Good`}
+              {`${(savingexpense && goal
+                ? (savingexpense[`${saving}`] * 100) / goal[`${saving}`]
+                : 0
+              ).toFixed(2)} % Amount Saved till now , Looks Good`}
             </Text>
           </View>
         </View>

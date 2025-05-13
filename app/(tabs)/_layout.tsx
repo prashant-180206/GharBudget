@@ -45,8 +45,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="analysis"
         options={{
-          headerShown: true,
-          header: () => <CustomHeader title="Analysis" />,
+          // headerShown: true,
+          headerShown: false,
+         
           title: "Analysis",
           tabBarIcon: ({ focused }) => (
             <View
@@ -120,7 +121,7 @@ export default function TabLayout() {
         name="Account_Details"
         options={{
           title: "Account Details",
-          headerShown:false,
+          headerShown: false,
           href: null,
         }}
       />
