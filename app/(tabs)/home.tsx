@@ -34,7 +34,7 @@ const home = () => {
           <View className="w-5/6 flex flex-row items-center justify-between m-3 lg:pt-5">
             <View>
               <Text className="text-heading font-bold text-2xl lg:text-4xl lg:pt-3">
-                Hello!  {userData?.fullName.split(" ")[0]}
+                Hello!   {userData?.fullName.split(" ")[0]}
               </Text>
               <Text className="text-heading-secondary font-semibold">
                 Welcome Back ! 

@@ -33,7 +33,7 @@ const Dashboard = ({
             </Text>
           </View>
           <Text className="text-3xl mt-1 text-Txt-light font-bold">
-            ₹{totalBalance.toLocaleString()}.00
+            ₹{totalBalance.toLocaleString()}
           </Text>
         </View>
         {/* Expense */}
@@ -45,7 +45,7 @@ const Dashboard = ({
             </Text>
           </View>
           <Text className="text-3xl mt-1 text-button-dark font-bold">
-            - ₹{totalExpense.toLocaleString()}.00
+            - ₹{totalExpense.toLocaleString()}
           </Text>
         </View>
       </View>
