@@ -10,11 +10,12 @@ import { auth, db } from "@/FirebaseConfig";
 interface DailyExpenseOptionSelectorProps {
   title: string;
   options: string[];
+  onClose?: () => void;
 }
 
 const Daily_Expense_Option_selector: React.FC<
   DailyExpenseOptionSelectorProps
-> = ({ title, options }) => {
+> = ({ title, options, onClose = () => {} }) => {
   const [visible, setVisible] = useState<boolean>(true);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const { dailyExpenseData, refresh } = useDailyExpense();
@@ -29,6 +30,7 @@ const Daily_Expense_Option_selector: React.FC<
 
   const onclose = async () => {
     setVisible(false);
+    onClose();
 
     if (dailyExpenseData) {
       const now = new Date();

@@ -261,11 +261,6 @@ const Analysis = () => {
                   </View>
                 )}
 
-                {(tab === "Budget" || tab === "Expense") && (
-                  <CategoryProgressLoaders />
-                )}
-                {tab === "Savings" && <SavingsCategoryLoaders />}
-
                 {hasBudget &&
                   hasExpense &&
                   (tab === "Budget" || tab === "Expense") && (
@@ -280,6 +275,11 @@ const Analysis = () => {
                   )}
 
                 {tab === "Savings" && <SavingsChart />}
+
+                {(tab === "Budget" || tab === "Expense") && (
+                  <CategoryProgressLoaders />
+                )}
+                {tab === "Savings" && <SavingsCategoryLoaders />}
               </>
             )}
           </ScrollView>

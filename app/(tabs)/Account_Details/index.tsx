@@ -130,22 +130,28 @@ const Account_Details = () => {
           <ScrollView className="mb-32">
             <View className="flex flex-row gap-4 justify-evenly">
               <TouchableOpacity
-                className=" p-4 px-4 bg-primary rounded-full mb-6"
+                className=" p-4 px-4 bg-primary rounded-full mb-6 "
                 onPress={() => {
                   router.push("/(tabs)/Account_Details/addincome");
                 }}
               >
-                <Text className="text-center  mx-2 font-semibold ">
+                <Text
+                  className="text-center mx-2 font-semibold truncate"
+                  numberOfLines={1}
+                >
                   Add Income
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className=" p-4 px-4 bg-primary rounded-full mb-6"
+                className=" p-4 px-4 bg-primary rounded-full mb-6 flex-1"
                 onPress={() => {
                   setResetModalVisible(true);
                 }}
               >
-                <Text className="text-center  mx-2 font-semibold ">
+                <Text
+                  className="text-center  mx-2 font-semibold "
+                  numberOfLines={1}
+                >
                   Reset Balance And Expense
                 </Text>
               </TouchableOpacity>
@@ -193,6 +199,8 @@ const Account_Details = () => {
                 <Chart
                   data={BudgetDataToChart(budgetData!, expenseData!)}
                   maxHeight={120}
+                  col1="Budget"
+                  col2="Expense"
                 />
               </View>
             )}

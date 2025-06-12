@@ -10,7 +10,6 @@ export default function TabLayout() {
   return (
     <DailyExpenseProvider>
       <Tabs
-        initialRouteName="search"
         screenOptions={{
           tabBarStyle: {
             position: "absolute",
@@ -132,7 +131,7 @@ export default function TabLayout() {
           options={{
             title: "Search",
             headerShown: true,
-            header:()=><CustomHeader title="Search"/>,
+            header: () => <CustomHeader title="Search" />,
             href: null,
           }}
         />

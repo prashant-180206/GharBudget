@@ -33,17 +33,20 @@ const CategoryGrid = () => {
         <View
           key={item.route}
           className="w-1/3 p-2 "
-          style={{ aspectRatio: 1 }} // makes each cell square
+          // makes each cell square
         >
           <TouchableOpacity
             className="flex-1"
             onPress={() => router.push(`/(tabs)/categories/${item.route}`)}
           >
-            <View className="flex-1 bg-button-light rounded-3xl justify-center items-center">
+            <View
+              className="flex-1 bg-button-light rounded-3xl justify-center items-center"
+              style={{ aspectRatio: 1 }}
+            >
               <Ionicons name={item.icon} size={40} color="#fff" />
             </View>
           </TouchableOpacity>
-          <Text className="text-Txt text-sm mt-1 font-semibold text-center">
+          <Text className="text-Txt text-sm mt-1 font-semibold text-center truncate">
             {item.label}
           </Text>
         </View>

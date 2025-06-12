@@ -1,11 +1,7 @@
 import { View, Text, StatusBar, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Chart from "@/components/chart";
-import CircularLoader from "@/components/circularLoader";
+import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/assets/colors";
-import { router } from "expo-router";
 import { useAppData } from "@/context/AppContext";
 import CombinedList from "@/components/tabs/ExpenseView";
 

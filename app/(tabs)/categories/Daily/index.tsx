@@ -164,11 +164,12 @@ const Daily = () => {
                         router.push(`/(tabs)/categories/Daily/${key}`);
                       }}
                     >
-                      <Text className="px-2 text-lg font-semibold w-3/12">{`${key}`}</Text>
-                      <Text>{`Daily : ₹${value}`}</Text>
-                      <Text className="pr-2 w-3/12">{`Total : ${
-                        num * value
-                      }`}</Text>
+                      <Text className="px-2 text-lg font-semibold w-4/12">{`${key}`}</Text>
+                      <Text className="">{`Daily : ₹${value}`}</Text>
+                      <Text
+                        className="pr-2 flex-1 text-right"
+                        numberOfLines={1}
+                      >{`Total : ${num * value}`}</Text>
                     </TouchableOpacity>
                   );
                 })}

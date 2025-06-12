@@ -1,7 +1,14 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db, auth } from "@/FirebaseConfig";
 import { Alert } from "react-native";
+import { onAuthStateChanged } from "firebase/auth";
 
 interface SavingsGoal {
   [route: string]: number;
@@ -21,8 +28,12 @@ const SavingsContext = createContext<SavingsContextType | undefined>(undefined);
 
 const SavingsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [goal, setGoal] = useState<SavingsGoal | null>(null);
-  const [savingexpense, setSavingExpense] = useState<SavingExpense | null>(null);
+  const [savingexpense, setSavingExpense] = useState<SavingExpense | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
+
+  const [authToggle, setauthToggle] = useState(false);
 
   useEffect(() => {
     const userId = auth.currentUser?.uid;
@@ -60,7 +71,9 @@ const SavingsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const unsubExpense = onSnapshot(
       expenseDocRef,
       (docSnap) => {
-        setSavingExpense(docSnap.exists() ? (docSnap.data() as SavingExpense) : null);
+        setSavingExpense(
+          docSnap.exists() ? (docSnap.data() as SavingExpense) : null
+        );
         expenseLoaded = true;
         if (goalLoaded && expenseLoaded) {
           setLoading(false);
@@ -77,6 +90,14 @@ const SavingsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       unsubGoal();
       unsubExpense();
     };
+  }, [authToggle]);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setauthToggle(!!user); // true if signed in, false if signed out
+    });
+
+    return () => unsubscribe();
   }, []);
 
   return (

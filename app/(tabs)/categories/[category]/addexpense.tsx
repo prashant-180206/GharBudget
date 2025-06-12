@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  ScrollView,
 } from "react-native";
 import React, { useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -127,77 +128,82 @@ const AddExpense = () => {
           style={{ flex: 1 }}
         >
           <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-            <View className="flex-1 bg-col_bg rounded-t-[80px] px-4 pb-32 justify-start pt-10 gap-8 items-center">
-              <View className="w-5/6 flex justify-center items-center">
-                <DateInput onDateChange={setDate} />
-              </View>
+            <View className="flex-1 bg-col_bg rounded-t-[80px] ">
+              <ScrollView className="flex-1 rounded-t-[80px] px-4 mb-32 pt-2">
+                <View className="flex-1 justify-start pt-10 gap-8 items-center rounded-t-[80px] pb-10">
+                  <View className="w-5/6 flex justify-center items-center">
+                    <DateInput onDateChange={setDate} />
+                  </View>
+                  <View></View>
 
-              {/* Category Input */}
-              <View className="w-5/6">
-                <Text className="font-semibold px-4 text-Txt-secondary">
-                  Category
-                </Text>
-                <DropdownInput
-                  items={ExpenseCategories}
-                  value={selectedCategory}
-                  onChange={setSelectedCategory}
-                  placeholder={
-                    category ? category.toString() : "Select Category"
-                  }
-                />
-              </View>
+                  {/* Category Input */}
+                  <View className="w-5/6">
+                    <Text className="font-semibold px-4 text-Txt-secondary">
+                      Category
+                    </Text>
+                    <DropdownInput
+                      items={ExpenseCategories}
+                      value={selectedCategory}
+                      onChange={setSelectedCategory}
+                      placeholder={
+                        category ? category.toString() : "Select Category"
+                      }
+                    />
+                  </View>
 
-              {/* Amount Input */}
-              <View className="w-5/6">
-                <Text className="p-2 font-semibold text-Txt-secondary">
-                  Enter Amount
-                </Text>
-                <TextInput
-                  className="bg-col_bg-dark w-full rounded-full px-6 py-4"
-                  placeholder="Enter Amount"
-                  keyboardType="numeric"
-                  value={amount}
-                  onChangeText={setAmount}
-                />
-              </View>
+                  {/* Amount Input */}
+                  <View className="w-5/6">
+                    <Text className="p-2 font-semibold text-Txt-secondary">
+                      Enter Amount
+                    </Text>
+                    <TextInput
+                      className="bg-col_bg-dark w-full rounded-full px-6 py-4"
+                      placeholder="Enter Amount"
+                      keyboardType="numeric"
+                      value={amount}
+                      onChangeText={setAmount}
+                    />
+                  </View>
 
-              {/* Expense Title Input */}
-              <View className="w-5/6">
-                <Text className="p-2 font-semibold text-Txt-secondary">
-                  Expense Title
-                </Text>
-                <TextInput
-                  className="bg-col_bg-dark w-full rounded-full px-6 py-4"
-                  placeholder="Expense Title (optional)"
-                  value={expenseTitle}
-                  onChangeText={setExpenseTitle}
-                />
-              </View>
+                  {/* Expense Title Input */}
+                  <View className="w-5/6">
+                    <Text className="p-2 font-semibold text-Txt-secondary">
+                      Expense Title
+                    </Text>
+                    <TextInput
+                      className="bg-col_bg-dark w-full rounded-full px-6 py-4"
+                      placeholder="Expense Title (optional)"
+                      value={expenseTitle}
+                      onChangeText={setExpenseTitle}
+                    />
+                  </View>
 
-              {/* Message Input */}
-              <TextInput
-                className="bg-col_bg-dark w-5/6 h-32 rounded-xl px-6 py-4 text-primary"
-                placeholder="Enter Message (optional)"
-                placeholderTextColor={Colors.primary.DEFAULT}
-                multiline
-                numberOfLines={4}
-                textAlignVertical="top"
-                value={message}
-                onChangeText={setMessage}
-              />
+                  {/* Message Input */}
+                  <TextInput
+                    className="bg-col_bg-dark w-5/6 h-32 rounded-xl px-6 py-4 text-primary"
+                    placeholder="Enter Message (optional)"
+                    placeholderTextColor={Colors.primary.DEFAULT}
+                    multiline
+                    numberOfLines={4}
+                    textAlignVertical="top"
+                    value={message}
+                    onChangeText={setMessage}
+                  />
 
-              {/* Error Message */}
-              {error ? <Text className="text-red-500">{error}</Text> : null}
+                  {/* Error Message */}
+                  {error ? <Text className="text-red-500">{error}</Text> : null}
 
-              {/* Save Button */}
-              <TouchableOpacity
-                onPress={ExpenseSubmit}
-                className="bg-primary p-2 rounded-full text-Txt w-3/6 text-center"
-              >
-                <Text className="text-xl mx-4 font-semibold text-Txt text-center">
-                  Save
-                </Text>
-              </TouchableOpacity>
+                  {/* Save Button */}
+                  <TouchableOpacity
+                    onPress={ExpenseSubmit}
+                    className="bg-primary p-2 rounded-full text-Txt w-3/6 text-center"
+                  >
+                    <Text className="text-xl mx-4 font-semibold text-Txt text-center">
+                      Save
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </ScrollView>
             </View>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>

@@ -80,7 +80,7 @@ const CombinedList: React.FC<CombinedListProps> = ({ filterType = "all" }) => {
           key={idx}
           className={`rounded-xl mb-2 p-4 flex flex-row justify-between items-center`}
         >
-          <View className="flex flex-row gap-5 items-center border-r-2 border-primary pr-2 w-[55%] overflow-hidden ">
+          <View className="flex flex-row gap-5 items-center border-r-2 border-primary pr-2 w-[60%] overflow-hidden ">
             <View className="p-4 rounded-[25%] bg-button-light">
               {item.type === "income" ? (
                 <Ionicons name="cash-outline" size={40} color="white" />
@@ -94,7 +94,7 @@ const CombinedList: React.FC<CombinedListProps> = ({ filterType = "all" }) => {
             </View>
 
             <View>
-              <Text className="text-xl font-semibold">
+              <Text className="text-xl font-semibold truncate">
                 {item.type === "income" ? item.Title : item.Category}
               </Text>
               <Text className="font-semibold text-button-dark">
@@ -102,16 +102,18 @@ const CombinedList: React.FC<CombinedListProps> = ({ filterType = "all" }) => {
               </Text>
             </View>
           </View>
-          <View className="flex flex-row h-full items-center w-[45%]">
+          <View className="flex flex-row h-full items-center w-[40%]">
             <View className="w-3/6 items-center justify-center">
-              <Text>{item.type === "expense" ? item.Title : item.Label}</Text>
+              <Text className="truncate overflow-hidden" numberOfLines={1}>
+                {item.type === "expense" ? item.Title : item.Label}
+              </Text>
             </View>
 
             <View className="w-3/6 border-l-2 h-full border-primary flex flex-row items-center justify-end">
               <Text
                 className={`text-xl ${
                   item.type === "income" ? "text-Txt" : "text-button-dark"
-                }`}
+                } truncate`}
               >
                 {item.type === "income" ? "" : "-"}
                 {" ₹ "}

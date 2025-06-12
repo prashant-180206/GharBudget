@@ -12,7 +12,9 @@ import Dashboard from "@/components/tabs/Dashboard";
 import { useAppData } from "@/context/AppContext";
 import CombinedList from "@/components/tabs/ExpenseView";
 import SavingDashboard from "@/components/categories/savingDashboard";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import Daily_Expense_Option_selector from "@/components/option_selector";
+import { useDailyExpense } from "@/context/DailyExpenseContext";
 // import OptionSelector from "@/components/option_selector";
 
 // import Btn from "@/components/Btn";
@@ -21,6 +23,20 @@ const home = () => {
   const router = useRouter();
 
   const { userData } = useAppData();
+  const [dailyshow, setdailyshow] = useState(false);
+  const { dailyExpenseData, refresh } = useDailyExpense();
+
+  useEffect(() => {
+    if (dailyExpenseData) {
+      const dailyavailable = dailyExpenseData?.Taken.filter((val) => {
+        return val.date === new Date().toISOString().slice(0, 10);
+      }).length;
+
+      if (dailyavailable === 0) {
+        setdailyshow(true);
+      }
+    }
+  }, [dailyExpenseData]);
 
   return (
     <>
@@ -30,14 +46,34 @@ const home = () => {
         backgroundColor="transparent"
       />
       <SafeAreaView className="h-full w-full bg-primary ">
+        {dailyshow && dailyExpenseData && (
+          <View className="bg-black/50 absolute h-full w-full z-50 flex pt-20 items-center">
+            <View className="w-5/6 mt-10">
+              <Daily_Expense_Option_selector
+                title="Daily Expense"
+                options={
+                  dailyExpenseData
+                    ? dailyExpenseData.categories.map(
+                        (cat) => Object.keys(cat)[0]
+                      )
+                    : [""]
+                }
+                onClose={() => {
+                  setdailyshow(false);
+                }}
+              />
+            </View>
+          </View>
+        )}
+
         <View className="w-full h-[30%] flex flex-col items-center justify-start">
           <View className="w-5/6 flex flex-row items-center justify-between m-3 lg:pt-5">
             <View>
               <Text className="text-heading font-bold text-2xl lg:text-4xl lg:pt-3">
-                Hello!   {userData?.fullName.split(" ")[0]}
+                Hello ! {userData?.fullName.split(" ")[0]}
               </Text>
               <Text className="text-heading-secondary font-semibold">
-                Welcome Back ! 
+                Welcome Back !
               </Text>
             </View>
 

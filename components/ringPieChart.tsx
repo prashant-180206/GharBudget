@@ -93,7 +93,7 @@ const CustomHalfPieChart: React.FC<CustomHalfPieChartProps> = ({
         </View>
       </View>
       {/* Legend with values */}
-      <View className="z-50 mr-8 lg:ml-10 flex-col flex-wrap justify-center gap-2 p-2">
+      <View className="z-50 mr-8 lg:ml-10 flex-col justify-center gap-2 p-2 ">
         {pieSlices.map((slice, idx) => (
           <View
             key={`${slice.name}-${idx}`}
